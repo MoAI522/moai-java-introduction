@@ -1,0 +1,17 @@
+{
+  "name": "is-java-env",
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "workspace",
+  "workspaceFolder": "/workspace/app/",
+  "shutdownAction": "stopCompose",
+  "extensions": [
+    "eamodio.gitlens",
+    "vscjava.vscode-java-debug",
+    "vscjava.vscode-java-pack",
+    "redhat.java",
+    "vscjava.vscode-maven",
+    "vscjava.vscode-java-dependency",
+    "vscjava.vscode-java-test",
+    "visualstudioexptteam.vscodeintellicode"
+  ]
+}
