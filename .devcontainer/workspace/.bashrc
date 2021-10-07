@@ -116,3 +116,8 @@ if type __git_ps1 > /dev/null 2>&1 ; then
   GIT_PS1_SHOWUPSTREAM="auto"
   GIT_PS1_SHOWCOLORHINTS=true
 fi
+
+#setup JavaFX
+export PATH_TO_FX=/usr/lib/javafx-sdk-11.0.2/lib
+alias javac='javac --module-path $PATH_TO_FX --add-modules javafx.controls'
+alias java='java --module-path $PATH_TO_FX --add-modules javafx.controls'
