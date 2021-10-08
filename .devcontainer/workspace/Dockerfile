@@ -1,12 +1,20 @@
-FROM amazoncorretto:8
+FROM ubuntu:latest
 
-#yum packages
-RUN yum install -y \
+ENV DEBIAN_FRONTEND "noninteractive"
+
+#apt packages
+RUN apt-get update -y && \
+  apt-get install -y --no-install-recommends \
   git \
   ca-certificates \
   build-essential \
   tar \
-  xorg-x11-apps-7.7-7.amzn2.0.1.x86_64
+  curl \
+  x11-apps \
+  libgtk-3-0
+
+RUN curl -o "/root/bellsoft-jdk11.deb" https://download.bell-sw.com/java/11.0.12+7/bellsoft-jdk11.0.12+7-linux-amd64-full.deb && \
+  apt install -y /root/bellsoft-jdk11.deb
 
 #add ssh secret-key
 COPY .dummy .ssh/* /root/.ssh/
