@@ -6,12 +6,15 @@ ENV DEBIAN_FRONTEND "noninteractive"
 RUN apt-get update -y && \
   apt-get install -y --no-install-recommends \
   git \
+  ssh \
   ca-certificates \
   build-essential \
   tar \
   curl \
   x11-apps \
-  libgtk-3-0
+  libgtk-3-0 \
+  language-pack-ja-base \
+  language-pack-ja
 
 RUN curl -o "/root/bellsoft-jdk11.deb" https://download.bell-sw.com/java/11.0.12+7/bellsoft-jdk11.0.12+7-linux-amd64-full.deb && \
   apt install -y /root/bellsoft-jdk11.deb
