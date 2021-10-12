@@ -4,5 +4,8 @@
     "**/.project": true,
     "**/.settings": true,
     "**/.factorypath": true
-  }
+  },
+  "java.project.sourcePaths": [
+    "is_exercise/graph_drawer"
+  ]
 }
