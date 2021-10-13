@@ -14,7 +14,7 @@ public class Main extends Application {
     DataManager dm = new DataManager();
     dm.loadData("./datas/data1.txt");
 
-    LineGraph.draw(dm.getData(), wm.getGc(), new Rect(10, 10, 400, 400));
+    LineGraph.draw(dm.getData(), wm.getGc(), new Rect(10, 10, 600, 400));
   }
 
   public static void main(String[] args) {

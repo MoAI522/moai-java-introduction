@@ -1,9 +1,9 @@
 package util;
 
 public class Rect {
-  public int x, y, w, h;
+  public double x, y, w, h;
 
-  public Rect(int x, int y, int w, int h) {
+  public Rect(double x, double y, double w, double h) {
     this.x = x;
     this.y = y;
     this.w = w;
