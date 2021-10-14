@@ -56,7 +56,7 @@ public class LineGraph {
   private static AnalyzationResult analyze(int[] data) {
     AnalyzationResult result = new AnalyzationResult();
     int min = data[0], max = data[0];
-    for (int v : Arrays.copyOfRange(data, 1, data.length - 1)) {
+    for (int v : Arrays.copyOfRange(data, 1, data.length)) {
       if (min > v) {
         min = v;
       }

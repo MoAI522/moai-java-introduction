@@ -1,10 +1,13 @@
 package ui;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class WindowManager {
@@ -14,17 +17,29 @@ public class WindowManager {
 
   public WindowManager(Stage st) {
     this.st = st;
-    this.canvas = new Canvas(640, 480);
-    this.gc = this.canvas.getGraphicsContext2D();
+    Rectangle2D screenSize = Screen.getPrimary().getBounds();
+    canvas = new Canvas(screenSize.getWidth(), screenSize.getHeight());
+    gc = canvas.getGraphicsContext2D();
   }
 
-  public void initWindow() {
-    Group root = new Group();
+  public void initWindow(int w, int h) {
+    BorderPane root = new BorderPane();
     root.getChildren().add(canvas);
-    Scene scene = new Scene(root, 640, 480, Color.WHITE);
-    st.setTitle("Graph Drawer");
+
+    GVMenuBar menu = new GVMenuBar();
+    root.setTop(menu);
+
+    canvas.resize(w, h);
+
+    Scene scene = new Scene(root, w, h, Color.WHITE);
+    st.setTitle("Graph Viewer");
     st.setScene(scene);
     st.show();
+  }
+
+  public void resetCanvas(int w, int h) {
+    canvas.resize(w, h);
+    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
   }
 
   public void setTitle(String title) {
