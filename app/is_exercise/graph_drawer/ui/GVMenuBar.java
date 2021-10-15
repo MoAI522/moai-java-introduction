@@ -13,9 +13,8 @@ public class GVMenuBar extends MenuBar {
   public GVMenuBar() {
     fileMenu = new Menu("File");
     fileNew = new MenuItem("New Project");
-    fileMenu.getItems().add(fileNew);
     fileImport = new MenuItem("Import data");
-    fileMenu.getItems().add(fileImport);
-    this.getMenus().add(fileMenu);
+    fileMenu.getItems().addAll(fileNew, fileImport);
+    this.getMenus().addAll(fileMenu);
   }
 }

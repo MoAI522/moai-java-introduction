@@ -1,21 +1,24 @@
 import data.DataManager;
+import graph.GraphManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import ui.LineGraph;
 import ui.WindowManager;
 import util.Rect;
 
 public class Main extends Application {
   private DataManager dm;
   private WindowManager wm;
+  private GraphManager gm;
 
   @Override
   public void start(Stage st) throws Exception {
+    dm = new DataManager();
+    dm.loadData("./datas/data5.txt");
+
+    gm = new GraphManager();
+
     wm = new WindowManager(st);
     wm.initWindow(640, 480);
-
-    dm = new DataManager();
-    dm.loadData("./datas/data1.txt");
 
     st.widthProperty().addListener((obs, oldVal, newVal) -> {
       render(newVal.intValue(), st.heightProperty().intValue());
@@ -31,8 +34,9 @@ public class Main extends Application {
     int padding = 20;
     int menuMargin = 30;
     wm.resetCanvas(w, h);
-    LineGraph.draw(dm.getData(), wm.getGc(),
-        new Rect(padding, menuMargin + padding, w - padding * 2, h - padding * 2 - menuMargin));
+
+    gm.drawGraph(dm, wm.getGc(), new Rect(padding, menuMargin + padding, w - padding * 2, h - padding * 2 - menuMargin),
+        1);
   }
 
   public static void main(String[] args) {

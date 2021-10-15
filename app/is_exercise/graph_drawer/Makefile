@@ -1,5 +1,5 @@
 .PHONY: run
-run:
+run: clear
 	javac Main.java
 	java Main
 

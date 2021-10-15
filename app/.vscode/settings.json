@@ -7,5 +7,6 @@
   },
   "java.project.sourcePaths": [
     "is_exercise/graph_drawer"
-  ]
+  ],
+  "editor.formatOnPaste": true
 }

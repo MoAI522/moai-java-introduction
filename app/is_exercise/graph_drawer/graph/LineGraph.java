@@ -1,7 +1,8 @@
-package ui;
+package graph;
 
 import java.util.Arrays;
 
+import data.DataManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import util.Rect;
@@ -10,14 +11,22 @@ class AnalyzationResult {
   public int vBegin, vEnd, vStep, hBegin, hEnd, hStep;
 }
 
-public class LineGraph {
+public class LineGraph extends Graph {
   final static double TOP_PADDING = 10;
   final static double V_SCALE_SPACE = 30;
   final static double H_SCALE_SPACE = 20;
   final static double TEXT_ADJUSTMENT_X = -5;
   final static double TEXT_ADJUSTMENT_Y = 20;
 
-  public static void draw(int[] data, GraphicsContext gc, Rect rect) {
+  public void draw(DataManager dm, GraphicsContext gc, Rect rect) {
+    String[][] strData = dm.getData();
+    int[][] data = new int[strData.length][];
+    for (int i = 0; i < strData.length; i++) {
+      data[i] = new int[strData[i].length];
+      for (int j = 0; j < strData[i].length; j++) {
+        data[i][j] = Integer.parseInt(strData[i][j]);
+      }
+    }
     AnalyzationResult result = analyze(data);
 
     gc.setStroke(Color.BLACK);
@@ -44,24 +53,32 @@ public class LineGraph {
         rect.y + rect.h - H_SCALE_SPACE + TEXT_ADJUSTMENT_Y);
 
     double dataPxRatio = (rect.h - H_SCALE_SPACE - TOP_PADDING) / (result.vEnd - result.vBegin);
-    for (int i = 1; i < data.length; i++) {
-      gc.setStroke(Color.BLUE);
-      gc.strokeLine(rect.x + V_SCALE_SPACE + hStepInPx * (i - 1),
-          rect.y + rect.h - H_SCALE_SPACE - (data[i - 1] - result.vBegin) * dataPxRatio,
-          rect.x + V_SCALE_SPACE + hStepInPx * i,
-          rect.y + rect.h - H_SCALE_SPACE - (data[i] - result.vBegin) * dataPxRatio);
+    for (int[] row : data) {
+      for (int i = 1; i < row.length; i++) {
+        gc.setStroke(Color.BLUE);
+        gc.strokeLine(rect.x + V_SCALE_SPACE + hStepInPx * (i - 1),
+            rect.y + rect.h - H_SCALE_SPACE - (row[i - 1] - result.vBegin) * dataPxRatio,
+            rect.x + V_SCALE_SPACE + hStepInPx * i,
+            rect.y + rect.h - H_SCALE_SPACE - (row[i] - result.vBegin) * dataPxRatio);
+      }
     }
   }
 
-  private static AnalyzationResult analyze(int[] data) {
+  private static AnalyzationResult analyze(int[][] data) {
     AnalyzationResult result = new AnalyzationResult();
-    int min = data[0], max = data[0];
-    for (int v : Arrays.copyOfRange(data, 1, data.length)) {
-      if (min > v) {
-        min = v;
+    int min = data[0][0], max = data[0][0];
+    int maxLength = 0;
+    for (int[] row : data) {
+      if (maxLength < row.length) {
+        maxLength = row.length;
       }
-      if (max < v) {
-        max = v;
+      for (int v : Arrays.copyOfRange(row, 1, row.length)) {
+        if (min > v) {
+          min = v;
+        }
+        if (max < v) {
+          max = v;
+        }
       }
     }
 
@@ -79,8 +96,8 @@ public class LineGraph {
     result.vEnd = max + result.vStep - (max % result.vStep);
 
     result.hBegin = 1;
-    result.hEnd = data.length;
-    result.hStep = Math.floorDiv(data.length, 10);
+    result.hEnd = maxLength;
+    result.hStep = Math.floorDiv(maxLength, 10);
 
     return result;
   }

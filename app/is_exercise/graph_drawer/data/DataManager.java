@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class DataManager {
-  private int[] data;
+  private String[][] data;
 
   public boolean loadData(String path) {
     try {
@@ -16,22 +16,15 @@ public class DataManager {
       FileReader fr = new FileReader(file);
       BufferedReader br = new BufferedReader(fr);
 
-      ArrayList<Integer> list = new ArrayList<>();
+      ArrayList<String[]> list = new ArrayList<>();
       String str = br.readLine();
       while (str != null) {
         String[] splittedData = str.split(" +");
-
-        for (String v : splittedData) {
-          list.add(Integer.parseInt(v));
-        }
-
+        list.add(splittedData);
         str = br.readLine();
       }
       br.close();
-      data = new int[list.size()];
-      for (int i = 0; i < list.size(); i++) {
-        data[i] = list.get(i);
-      }
+      data = list.toArray(new String[list.size()][]);
       return true;
     } catch (FileNotFoundException e) {
       System.err.println("Could not open the file " + path);
@@ -41,7 +34,7 @@ public class DataManager {
     return false;
   }
 
-  public int[] getData() {
+  public String[][] getData() {
     return data;
   }
 }
