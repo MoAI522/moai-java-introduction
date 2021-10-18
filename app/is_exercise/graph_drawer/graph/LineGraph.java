@@ -5,6 +5,7 @@ import java.util.Arrays;
 import data.DataManager;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import util.HSVColor;
 import util.Rect;
 
 class AnalyzationResult {
@@ -42,24 +43,27 @@ public class LineGraph extends Graph {
           rect.y + TOP_PADDING + vStepInPx * (vLineNumber - i));
     }
 
-    double hStepInPx = (rect.w - V_SCALE_SPACE) / (data.length - 1);
-    int hScaleStep = Math.floorDiv(data.length, 10) + 1;
-    for (int i = 0, j = 1; i < Math.min(9, data.length / hScaleStep); i++, j += hScaleStep) {
+    double hStepInPx = (rect.w - V_SCALE_SPACE) / (result.hEnd - 1);
+    int hScaleStep = Math.floorDiv(result.hEnd, 10) + 1;
+    for (int i = 0, j = 1; i < Math.min(9, result.hEnd / hScaleStep); i++, j += hScaleStep) {
       gc.strokeText(Integer.valueOf(j).toString(),
           rect.x + V_SCALE_SPACE + hStepInPx * (i * hScaleStep) + TEXT_ADJUSTMENT_X,
           rect.y + rect.h - H_SCALE_SPACE + TEXT_ADJUSTMENT_Y);
     }
-    gc.strokeText(Integer.valueOf(data.length).toString(), rect.x + rect.w + TEXT_ADJUSTMENT_X,
+    gc.strokeText(Integer.valueOf(result.hEnd).toString(), rect.x + rect.w + TEXT_ADJUSTMENT_X,
         rect.y + rect.h - H_SCALE_SPACE + TEXT_ADJUSTMENT_Y);
 
     double dataPxRatio = (rect.h - H_SCALE_SPACE - TOP_PADDING) / (result.vEnd - result.vBegin);
-    for (int[] row : data) {
-      for (int i = 1; i < row.length; i++) {
-        gc.setStroke(Color.BLUE);
-        gc.strokeLine(rect.x + V_SCALE_SPACE + hStepInPx * (i - 1),
-            rect.y + rect.h - H_SCALE_SPACE - (row[i - 1] - result.vBegin) * dataPxRatio,
-            rect.x + V_SCALE_SPACE + hStepInPx * i,
-            rect.y + rect.h - H_SCALE_SPACE - (row[i] - result.vBegin) * dataPxRatio);
+    double hueStep = (double) 360 / data.length;
+    for (int i = 0; i < data.length; i++) {
+      int[] row = data[i];
+      int[] color = new HSVColor(hueStep * i, 200, 230).getRGB();
+      gc.setStroke(Color.rgb(color[0], color[1], color[2]));
+      for (int j = 1; j < row.length; j++) {
+        gc.strokeLine(rect.x + V_SCALE_SPACE + hStepInPx * (j - 1),
+            rect.y + rect.h - H_SCALE_SPACE - (row[j - 1] - result.vBegin) * dataPxRatio,
+            rect.x + V_SCALE_SPACE + hStepInPx * j,
+            rect.y + rect.h - H_SCALE_SPACE - (row[j] - result.vBegin) * dataPxRatio);
       }
     }
   }
