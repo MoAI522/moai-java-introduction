@@ -1,9 +1,18 @@
 package ui;
 
+import controller.Controller;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
@@ -13,9 +22,11 @@ public class WindowManager {
   private Stage st;
   private Canvas canvas;
   private GraphicsContext gc;
+  private Controller ctr;
 
-  public WindowManager(Stage st) {
+  public WindowManager(Stage st, Controller ctr) {
     this.st = st;
+    this.ctr = ctr;
     Rectangle2D screenSize = Screen.getPrimary().getBounds();
     canvas = new Canvas(screenSize.getWidth(), screenSize.getHeight());
     gc = canvas.getGraphicsContext2D();
@@ -25,8 +36,21 @@ public class WindowManager {
     BorderPane root = new BorderPane();
     root.getChildren().add(canvas);
 
-    GVMenuBar menu = new GVMenuBar();
-    root.setTop(menu);
+    Button openFile = new Button("Open File");
+    openFile.setOnAction((ActionEvent e) -> {
+      ctr.openFile();
+    });
+    root.setTop(openFile);
+
+    ObservableList<String> options = FXCollections.observableArrayList("Line Graph", "Circle Graph(Literally)",
+        "Circle Graph(Classify)", "Rader Chart");
+    ChoiceBox<String> graphSelector = new ChoiceBox<>(options);
+    graphSelector.getSelectionModel().selectedIndexProperty()
+        .addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+          ctr.toggleGraph(new_val.intValue());
+        });
+    graphSelector.setValue(options.get(0));
+    root.setTop(graphSelector);
 
     canvas.resize(w, h);
 

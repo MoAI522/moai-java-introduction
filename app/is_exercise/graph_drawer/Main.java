@@ -4,11 +4,13 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import ui.WindowManager;
 import util.Rect;
+import controller.Controller;
 
 public class Main extends Application {
   private DataManager dm;
   private WindowManager wm;
   private GraphManager gm;
+  private Controller ctr;
 
   @Override
   public void start(Stage st) throws Exception {
@@ -17,7 +19,11 @@ public class Main extends Application {
 
     gm = new GraphManager();
 
-    wm = new WindowManager(st);
+    ctr = new Controller(dm, gm, () -> {
+      render(st.widthProperty().intValue(), st.heightProperty().intValue());
+    });
+
+    wm = new WindowManager(st, ctr);
     wm.initWindow(640, 480);
 
     st.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -35,8 +41,8 @@ public class Main extends Application {
     int menuMargin = 30;
     wm.resetCanvas(w, h);
 
-    gm.drawGraph(dm, wm.getGc(), new Rect(padding, menuMargin + padding, w - padding * 2, h - padding * 2 - menuMargin),
-        0);
+    gm.drawGraph(dm, wm.getGc(),
+        new Rect(padding, menuMargin + padding, w - padding * 2, h - padding * 2 - menuMargin));
   }
 
   public static void main(String[] args) {
