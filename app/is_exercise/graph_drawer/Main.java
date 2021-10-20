@@ -19,12 +19,12 @@ public class Main extends Application {
 
     gm = new GraphManager();
 
-    ctr = new Controller(dm, gm, () -> {
+    wm = new WindowManager(st);
+    wm.initWindow(640, 480);
+
+    ctr = new Controller(dm, gm, wm, () -> {
       render(st.widthProperty().intValue(), st.heightProperty().intValue());
     });
-
-    wm = new WindowManager(st, ctr);
-    wm.initWindow(640, 480);
 
     st.widthProperty().addListener((obs, oldVal, newVal) -> {
       render(newVal.intValue(), st.heightProperty().intValue());
