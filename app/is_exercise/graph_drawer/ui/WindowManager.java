@@ -1,6 +1,7 @@
 package ui;
 
-import controller.Controller;
+import java.io.File;
+
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,10 +12,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -22,11 +22,11 @@ public class WindowManager {
   private Stage st;
   private Canvas canvas;
   private GraphicsContext gc;
-  private Controller ctr;
+  private Runnable openFileFunc;
+  private IToggleGraphFunc toggleGraphFunc;
 
-  public WindowManager(Stage st, Controller ctr) {
+  public WindowManager(Stage st) {
     this.st = st;
-    this.ctr = ctr;
     Rectangle2D screenSize = Screen.getPrimary().getBounds();
     canvas = new Canvas(screenSize.getWidth(), screenSize.getHeight());
     gc = canvas.getGraphicsContext2D();
@@ -38,7 +38,8 @@ public class WindowManager {
 
     Button openFile = new Button("Open File");
     openFile.setOnAction((ActionEvent e) -> {
-      ctr.openFile();
+      if (openFileFunc != null)
+        openFileFunc.run();
     });
     root.setTop(openFile);
 
@@ -47,7 +48,8 @@ public class WindowManager {
     ChoiceBox<String> graphSelector = new ChoiceBox<>(options);
     graphSelector.getSelectionModel().selectedIndexProperty()
         .addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
-          ctr.toggleGraph(new_val.intValue());
+          if (toggleGraphFunc != null)
+            toggleGraphFunc.run(new_val.intValue());
         });
     graphSelector.setValue(options.get(0));
     root.setTop(graphSelector);
@@ -65,8 +67,22 @@ public class WindowManager {
     gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
   }
 
+  public File openFileChooser() {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Open Data File");
+    return fileChooser.showOpenDialog(st);
+  }
+
   public void setTitle(String title) {
     st.setTitle(title);
+  }
+
+  public void setOpenFileFunc(Runnable openFileFunc) {
+    this.openFileFunc = openFileFunc;
+  }
+
+  public void setToggleGraphFunc(IToggleGraphFunc toggleGraphFunc) {
+    this.toggleGraphFunc = toggleGraphFunc;
   }
 
   public GraphicsContext getGc() {
