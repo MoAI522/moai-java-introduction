@@ -15,7 +15,7 @@ public class Main extends Application {
   @Override
   public void start(Stage st) throws Exception {
     dm = new DataManager();
-    dm.loadData("./datas/data1.txt");
+    dm.loadData("./datas/data7.txt");
 
     gm = new GraphManager();
 

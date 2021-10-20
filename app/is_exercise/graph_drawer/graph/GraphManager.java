@@ -18,6 +18,11 @@ public class GraphManager {
   }
 
   public void drawGraph(DataManager dm, GraphicsContext gc, Rect rect) {
+    if (!graphs[graphIndex].varidate(dm)) {
+      gc.strokeText("This data cannot be shown by this graph type.", rect.x, rect.y);
+      return;
+    }
+
     graphs[graphIndex].draw(dm, gc, rect);
   }
 

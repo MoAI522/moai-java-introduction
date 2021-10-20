@@ -3,9 +3,11 @@ package graph;
 import java.util.Arrays;
 
 import data.DataManager;
+import data.DataManager.DataType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import util.HSVColor;
 import util.Rect;
 
 class RCAnalyzationResult {
@@ -17,16 +19,19 @@ public class RaderChart extends Graph {
   final static int SCALE_OFFSET = 10;
   final static int SCALE_VERTICAL_ADJUST = 4;
   final static int VERTICAL_SCALE_MARGIN_LEFT = 12;
+  final static double OPACITY = 0.3;
+
+  public boolean varidate(DataManager dm) {
+    DataType[] types = dm.getTypes();
+    for (DataType type : types)
+      if (type == DataType.STRING)
+        return false;
+
+    return true;
+  }
 
   public void draw(DataManager dm, GraphicsContext gc, Rect rect) {
-    String[][] strData = dm.getData();
-    int[][] data = new int[strData.length][];
-    for (int i = 0; i < strData.length; i++) {
-      data[i] = new int[strData[i].length];
-      for (int j = 0; j < strData[i].length; j++) {
-        data[i][j] = Integer.parseInt(strData[i][j]);
-      }
-    }
+    double[][] data = dm.getNumberData();
     RCAnalyzationResult result = analyze(data);
 
     double radius = Math.min(rect.w, rect.h) / 2 - PADDING;
@@ -34,7 +39,9 @@ public class RaderChart extends Graph {
     double centerY = rect.y + rect.h / 2;
 
     gc.setStroke(Color.BLACK);
+    gc.setLineWidth(1.0);
     gc.setTextAlign(TextAlignment.LEFT);
+
     for (int i = 0; i <= result.vScaleNumber; i++) {
       if (i > 0) {
         drawRegularPolygon(gc, result.maxLength, centerX, centerY, radius * ((double) i / result.vScaleNumber));
@@ -43,7 +50,7 @@ public class RaderChart extends Graph {
           centerY - radius * ((double) i / result.vScaleNumber));
     }
 
-    double radiusRatio = radius / result.vEnd;
+    double dataRadiusRatio = radius / result.vEnd;
     double[][] x = new double[data.length][result.maxLength + 1];
     double[][] y = new double[data.length][result.maxLength + 1];
     for (int i = 0; i < result.maxLength; i++) {
@@ -55,20 +62,26 @@ public class RaderChart extends Graph {
           centerY + (radius + SCALE_OFFSET) * s + SCALE_VERTICAL_ADJUST);
 
       for (int j = 0; j < data.length; j++) {
-        int value;
+        double value;
         if (i >= data[j].length)
           value = 0;
         else
           value = data[j][i];
-        x[j][i] = centerX + radiusRatio * value * c;
-        y[j][i] = centerY + radiusRatio * value * s;
+        x[j][i] = centerX + dataRadiusRatio * value * c;
+        y[j][i] = centerY + dataRadiusRatio * value * s;
       }
     }
 
+    gc.setLineWidth(3.0);
+    double hueStep = 360.0 / data.length;
     for (int i = 0; i < data.length; i++) {
       x[i][result.maxLength] = x[i][0];
       y[i][result.maxLength] = y[i][0];
-      gc.setFill();
+      int[] color = new HSVColor(hueStep * i, 200, 230).getRGB();
+      gc.setStroke(Color.rgb(color[0], color[1], color[2]));
+      gc.strokePolygon(x[i], y[i], result.maxLength);
+      gc.setFill(Color.rgb(color[0], color[1], color[2], OPACITY));
+      gc.fillPolygon(x[i], y[i], result.maxLength);
     }
 
   }
@@ -85,15 +98,15 @@ public class RaderChart extends Graph {
     gc.strokePolygon(x, y, vertex + 1);
   }
 
-  private static RCAnalyzationResult analyze(int[][] data) {
+  private static RCAnalyzationResult analyze(double[][] data) {
     RCAnalyzationResult result = new RCAnalyzationResult();
-    int min = data[0][0], max = data[0][0];
+    double min = data[0][0], max = data[0][0];
     int maxLength = 0;
-    for (int[] row : data) {
+    for (double[] row : data) {
       if (maxLength < row.length) {
         maxLength = row.length;
       }
-      for (int v : Arrays.copyOfRange(row, 1, row.length)) {
+      for (double v : Arrays.copyOfRange(row, 1, row.length)) {
         if (min > v) {
           min = v;
         }
@@ -112,7 +125,7 @@ public class RaderChart extends Graph {
         break;
       result.vStep *= 2;
     }
-    result.vEnd = max + result.vStep - (max % result.vStep);
+    result.vEnd = (int) Math.floor(max + result.vStep - (max % result.vStep));
     result.vScaleNumber = (int) Math.ceil((double) max / result.vStep);
 
     result.maxLength = maxLength;

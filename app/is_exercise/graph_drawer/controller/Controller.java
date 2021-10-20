@@ -4,7 +4,6 @@ import java.io.File;
 
 import data.DataManager;
 import graph.GraphManager;
-import javafx.stage.FileChooser;
 import ui.WindowManager;
 
 public class Controller {
@@ -18,10 +17,17 @@ public class Controller {
     this.gm = gm;
     this.wm = wm;
     this.render = render;
+
+    this.wm.setOpenFileFunc(this::openFile);
+    this.wm.setToggleGraphFunc(this::toggleGraph);
   }
 
   public void openFile() {
     File file = wm.openFileChooser();
+    if (file == null)
+      return;
+    dm.loadData(file);
+    render.run();
   }
 
   public void toggleGraph(int index) {

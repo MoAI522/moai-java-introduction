@@ -3,6 +3,7 @@ package graph;
 import java.util.ArrayList;
 
 import data.DataManager;
+import data.DataManager.DataType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
@@ -12,7 +13,7 @@ import util.HSVColor;
 
 class DataClass {
   public String value;
-  public int amount;
+  public double amount;
   public double ratio;
   public HSVColor color;
 }
@@ -40,19 +41,23 @@ public class CircleGraph extends Graph {
     this.mode = mode;
   }
 
+  public boolean varidate(DataManager dm) {
+    if (mode == Mode.LITERALLY && dm.getTypes()[0] == DataType.STRING) {
+      return false;
+    }
+
+    return true;
+  }
+
   public void draw(DataManager dm, GraphicsContext gc, Rect rect) {
     DataClass[] result;
 
     switch (mode) {
       case LITERALLY: {
-        String[][] strData = dm.getData();
-        int[] data = new int[strData[0].length];
-        for (int i = 0; i < strData[0].length; i++) {
-          data[i] = Integer.parseInt(strData[0][i]);
-        }
+        double[] data = dm.getNumberData()[0];
         String[] labels;
-        if (strData.length >= 2) {
-          labels = strData[1];
+        if (dm.getData().length >= 2) {
+          labels = dm.getData()[1];
         } else {
           labels = null;
         }
@@ -61,7 +66,7 @@ public class CircleGraph extends Graph {
       }
       case CLASSIFICATION:
       default: {
-        String[][] data = dm.getData();
+        String[] data = dm.getData()[0];
         result = classify(data);
         break;
       }
@@ -75,6 +80,9 @@ public class CircleGraph extends Graph {
     double centerY = rect.y + graphArea.h / 2;
 
     gc.setStroke(Color.BLACK);
+    gc.setLineWidth(1.0);
+    gc.setTextAlign(TextAlignment.LEFT);
+
     gc.strokeOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
     gc.strokeRect(descriptionArea.x + DESCRIPTION_MARGIN, descriptionArea.y + DESCRIPTION_MARGIN,
         descriptionArea.w - DESCRIPTION_MARGIN * 2, DESCRIPTION_ROW_HEIGHT * result.length + DESCRIPTION_PADDING * 2);
@@ -88,7 +96,7 @@ public class CircleGraph extends Graph {
           ArcType.ROUND);
       if (mode == Mode.LITERALLY) {
         gc.setTextAlign((sum > 0.5 ? TextAlignment.RIGHT : TextAlignment.LEFT));
-        gc.strokeText(Integer.toString(dc.amount),
+        gc.strokeText(Double.toString(dc.amount),
             centerX + (radius + GRAPH_SCALE_OFFSET) * Math.cos(Math.PI * 2 * ((sum + dc.ratio / 2) - 0.25))
                 + GRAPH_SCALE_HORIZONTAL_ADJUST,
             centerY + (radius + GRAPH_SCALE_OFFSET) * Math.sin(Math.PI * 2 * ((sum + dc.ratio / 2) - 0.25))
@@ -113,10 +121,10 @@ public class CircleGraph extends Graph {
     }
   }
 
-  private DataClass[] analyze(int[] data, String[] labels) {
+  private DataClass[] analyze(double[] data, String[] labels) {
     DataClass[] arr = new DataClass[data.length];
 
-    int sum = 0;
+    double sum = 0;
     for (int i = 0; i < data.length; i++) {
       DataClass dc = new DataClass();
       dc.amount = data[i];
@@ -144,35 +152,32 @@ public class CircleGraph extends Graph {
     return arr;
   }
 
-  private DataClass[] classify(String[][] data) {
+  private DataClass[] classify(String[] data) {
     ArrayList<DataClass> list = new ArrayList<>();
 
-    int total = 0;
-    for (String[] row : data) {
-      total += row.length;
-      for (String v : row) {
-        boolean exists = false;
-        for (DataClass dc : list) {
-          if (v.equals(dc.value)) {
-            dc.amount++;
-            exists = true;
-            break;
-          }
+    for (String v : data) {
+      boolean exists = false;
+      for (DataClass dc : list) {
+        if (v.equals(dc.value)) {
+          dc.amount++;
+          exists = true;
+          break;
         }
-        if (!exists) {
-          DataClass dc = new DataClass();
-          dc.value = v;
-          dc.amount = 1;
-          list.add(dc);
-        }
+      }
+      if (!exists) {
+        DataClass dc = new DataClass();
+        dc.value = v;
+        dc.amount = 1;
+        list.add(dc);
       }
     }
 
-    DataClass[] sorted = list.stream().sorted((a, b) -> b.amount - a.amount).toArray(DataClass[]::new);
+    DataClass[] sorted = list.stream().sorted((a, b) -> (int) Math.floor(b.amount - a.amount))
+        .toArray(DataClass[]::new);
 
     for (int i = 0; i < sorted.length; i++) {
       DataClass dc = sorted[i];
-      dc.ratio = (double) dc.amount / total;
+      dc.ratio = (double) dc.amount / data.length;
       int index;
       if (sorted.length % 2 == 0) {
         index = (2 * i) % sorted.length / 2 + (i >= sorted.length / 2 ? 1 : 0);

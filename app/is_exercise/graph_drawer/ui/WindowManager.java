@@ -13,6 +13,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
@@ -36,13 +37,12 @@ public class WindowManager {
     BorderPane root = new BorderPane();
     root.getChildren().add(canvas);
 
+    FlowPane controllers = new FlowPane();
     Button openFile = new Button("Open File");
     openFile.setOnAction((ActionEvent e) -> {
       if (openFileFunc != null)
         openFileFunc.run();
     });
-    root.setTop(openFile);
-
     ObservableList<String> options = FXCollections.observableArrayList("Line Graph", "Circle Graph(Literally)",
         "Circle Graph(Classify)", "Rader Chart");
     ChoiceBox<String> graphSelector = new ChoiceBox<>(options);
@@ -52,7 +52,8 @@ public class WindowManager {
             toggleGraphFunc.run(new_val.intValue());
         });
     graphSelector.setValue(options.get(0));
-    root.setTop(graphSelector);
+    controllers.getChildren().addAll(openFile, graphSelector);
+    root.setTop(controllers);
 
     canvas.resize(w, h);
 
