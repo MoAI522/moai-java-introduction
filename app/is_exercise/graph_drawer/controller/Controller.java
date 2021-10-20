@@ -26,6 +26,7 @@ public class Controller {
     File file = wm.openFileChooser();
     if (file == null)
       return;
+    wm.setTitle(file.getName() + " - Graph Viewer");
     dm.loadData(file);
     render.run();
   }

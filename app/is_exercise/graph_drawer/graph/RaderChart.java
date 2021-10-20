@@ -38,7 +38,7 @@ public class RaderChart extends Graph {
     double centerX = rect.x + rect.w / 2;
     double centerY = rect.y + rect.h / 2;
 
-    gc.setStroke(Color.BLACK);
+    gc.setStroke(Color.rgb(115, 133, 150));
     gc.setLineWidth(1.0);
     gc.setTextAlign(TextAlignment.LEFT);
 
@@ -77,13 +77,13 @@ public class RaderChart extends Graph {
     for (int i = 0; i < data.length; i++) {
       x[i][result.maxLength] = x[i][0];
       y[i][result.maxLength] = y[i][0];
-      int[] color = new HSVColor(hueStep * i, 200, 230).getRGB();
-      gc.setStroke(Color.rgb(color[0], color[1], color[2]));
+      int[] strokeColor = new HSVColor(hueStep * i, 200, 230).getRGB();
+      int[] fillColor = new HSVColor(hueStep * i, 180, 200).getRGB();
+      gc.setStroke(Color.rgb(strokeColor[0], strokeColor[1], strokeColor[2]));
       gc.strokePolygon(x[i], y[i], result.maxLength);
-      gc.setFill(Color.rgb(color[0], color[1], color[2], OPACITY));
+      gc.setFill(Color.rgb(fillColor[0], fillColor[1], fillColor[2], OPACITY));
       gc.fillPolygon(x[i], y[i], result.maxLength);
     }
-
   }
 
   private void drawRegularPolygon(GraphicsContext gc, int vertex, double centerX, double centerY, double radius) {

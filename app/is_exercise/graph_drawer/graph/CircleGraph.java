@@ -79,7 +79,7 @@ public class CircleGraph extends Graph {
     double centerX = rect.x + graphArea.w / 2;
     double centerY = rect.y + graphArea.h / 2;
 
-    gc.setStroke(Color.BLACK);
+    gc.setStroke(Color.rgb(115, 133, 150));
     gc.setLineWidth(1.0);
     gc.setTextAlign(TextAlignment.LEFT);
 
@@ -146,7 +146,7 @@ public class CircleGraph extends Graph {
       } else {
         index = (2 * i) % arr.length;
       }
-      dc.color = new HSVColor((360.0 / arr.length) * index, 200, 230);
+      dc.color = new HSVColor((360.0 / arr.length) * index, 180, 200);
     }
 
     return arr;
@@ -184,7 +184,7 @@ public class CircleGraph extends Graph {
       } else {
         index = (2 * i) % sorted.length;
       }
-      dc.color = new HSVColor((360.0 / sorted.length) * index, 200, 230);
+      dc.color = new HSVColor((360.0 / sorted.length) * index, 180, 200);
     }
 
     return sorted;

@@ -15,10 +15,7 @@ public class Main extends Application {
   @Override
   public void start(Stage st) throws Exception {
     dm = new DataManager();
-    dm.loadData("./datas/data7.txt");
-
     gm = new GraphManager();
-
     wm = new WindowManager(st);
     wm.initWindow(640, 480);
 

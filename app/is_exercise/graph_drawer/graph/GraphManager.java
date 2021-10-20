@@ -2,6 +2,8 @@ package graph;
 
 import data.DataManager;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import util.Rect;
 
 public class GraphManager {
@@ -18,7 +20,17 @@ public class GraphManager {
   }
 
   public void drawGraph(DataManager dm, GraphicsContext gc, Rect rect) {
+    if (dm.getFilename() == null) {
+      gc.setStroke(Color.rgb(115, 133, 150));
+      gc.setLineWidth(1.0);
+      gc.setTextAlign(TextAlignment.LEFT);
+      gc.strokeText("Press \"Open File\" button to choose data file.", rect.x, rect.y);
+      return;
+    }
     if (!graphs[graphIndex].varidate(dm)) {
+      gc.setStroke(Color.rgb(115, 133, 150));
+      gc.setLineWidth(1.0);
+      gc.setTextAlign(TextAlignment.LEFT);
       gc.strokeText("This data cannot be shown by this graph type.", rect.x, rect.y);
       return;
     }

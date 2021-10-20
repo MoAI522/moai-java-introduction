@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -15,6 +16,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -38,11 +40,15 @@ public class WindowManager {
     root.getChildren().add(canvas);
 
     FlowPane controllers = new FlowPane();
+    controllers.setPadding(new Insets(5));
+    controllers.setHgap(5);
     Button openFile = new Button("Open File");
     openFile.setOnAction((ActionEvent e) -> {
       if (openFileFunc != null)
         openFileFunc.run();
     });
+    Text graphSelectorLabel = new Text("Graph Type:");
+    graphSelectorLabel.setFill(Color.rgb(115, 133, 150));
     ObservableList<String> options = FXCollections.observableArrayList("Line Graph", "Circle Graph(Literally)",
         "Circle Graph(Classify)", "Rader Chart");
     ChoiceBox<String> graphSelector = new ChoiceBox<>(options);
@@ -52,12 +58,12 @@ public class WindowManager {
             toggleGraphFunc.run(new_val.intValue());
         });
     graphSelector.setValue(options.get(0));
-    controllers.getChildren().addAll(openFile, graphSelector);
+    controllers.getChildren().addAll(openFile, graphSelectorLabel, graphSelector);
     root.setTop(controllers);
 
     canvas.resize(w, h);
 
-    Scene scene = new Scene(root, w, h, Color.WHITE);
+    Scene scene = new Scene(root, w, h, Color.rgb(19, 22, 26));
     st.setTitle("Graph Viewer");
     st.setScene(scene);
     st.show();
@@ -65,7 +71,8 @@ public class WindowManager {
 
   public void resetCanvas(int w, int h) {
     canvas.resize(w, h);
-    gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    gc.setFill(Color.rgb(19, 22, 26));
+    gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
   }
 
   public File openFileChooser() {

@@ -36,7 +36,7 @@ public class LineGraph extends Graph {
 
     LGAnalyzationResult result = analyze(data);
 
-    gc.setStroke(Color.BLACK);
+    gc.setStroke(Color.rgb(115, 133, 150));
     gc.setLineWidth(1.0);
     gc.setTextAlign(TextAlignment.LEFT);
 

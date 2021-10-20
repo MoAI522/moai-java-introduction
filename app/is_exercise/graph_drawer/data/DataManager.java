@@ -15,6 +15,7 @@ public class DataManager {
   private String[][] data;
   private double[][] numberData;
   private DataType[] types;
+  private String filename;
 
   public boolean loadData(String path) {
     File file = new File(path);
@@ -22,6 +23,8 @@ public class DataManager {
   }
 
   public boolean loadData(File file) {
+    filename = file.getName();
+
     try {
       FileReader fr = new FileReader(file);
       BufferedReader br = new BufferedReader(fr);
@@ -37,7 +40,7 @@ public class DataManager {
         DataType type = DataType.NUMBER;
         double[] numbers = new double[splittedData.length];
         for (int i = 0; i < splittedData.length; i++) {
-          if (splittedData[i].matches("[+-]?\\d*(\\.\\d*)?")) {
+          if (splittedData[i].matches("[+-]?\\d+(\\.\\d*)?")) {
             numbers[i] = Double.parseDouble(splittedData[i]);
           } else {
             numbers[i] = 0;
@@ -72,5 +75,9 @@ public class DataManager {
 
   public DataType[] getTypes() {
     return types;
+  }
+
+  public String getFilename() {
+    return filename;
   }
 }
