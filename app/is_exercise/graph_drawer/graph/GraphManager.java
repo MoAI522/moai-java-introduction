@@ -9,10 +9,11 @@ public class GraphManager {
   private int graphIndex;
 
   public GraphManager() {
-    graphs = new Graph[3];
+    graphs = new Graph[4];
     graphs[0] = new LineGraph();
     graphs[1] = new CircleGraph(CircleGraph.Mode.LITERALLY);
     graphs[2] = new CircleGraph(CircleGraph.Mode.CLASSIFICATION);
+    graphs[3] = new RaderChart();
     graphIndex = 0;
   }
 
