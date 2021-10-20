@@ -8,10 +8,11 @@ public class GraphManager {
   private Graph[] graphs;
 
   public GraphManager() {
-    graphs = new Graph[3];
+    graphs = new Graph[4];
     graphs[0] = new LineGraph();
     graphs[1] = new CircleGraph(CircleGraph.Mode.LITERALLY);
     graphs[2] = new CircleGraph(CircleGraph.Mode.CLASSIFICATION);
+    graphs[3] = new RaderChart();
   }
 
   public void drawGraph(DataManager dm, GraphicsContext gc, Rect rect, int index) {

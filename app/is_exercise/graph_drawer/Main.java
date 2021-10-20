@@ -13,7 +13,7 @@ public class Main extends Application {
   @Override
   public void start(Stage st) throws Exception {
     dm = new DataManager();
-    dm.loadData("./datas/data5.txt");
+    dm.loadData("./datas/data1.txt");
 
     gm = new GraphManager();
 
@@ -36,7 +36,7 @@ public class Main extends Application {
     wm.resetCanvas(w, h);
 
     gm.drawGraph(dm, wm.getGc(), new Rect(padding, menuMargin + padding, w - padding * 2, h - padding * 2 - menuMargin),
-        1);
+        3);
   }
 
   public static void main(String[] args) {

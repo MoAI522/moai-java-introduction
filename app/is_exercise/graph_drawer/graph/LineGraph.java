@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import util.Rect;
 
-class AnalyzationResult {
+class LGAnalyzationResult {
   public int vBegin, vEnd, vStep, hBegin, hEnd, hStep;
 }
 
@@ -27,7 +27,7 @@ public class LineGraph extends Graph {
         data[i][j] = Integer.parseInt(strData[i][j]);
       }
     }
-    AnalyzationResult result = analyze(data);
+    LGAnalyzationResult result = analyze(data);
 
     gc.setStroke(Color.BLACK);
     gc.strokeLine(rect.x + V_SCALE_SPACE, rect.y + TOP_PADDING, rect.x + V_SCALE_SPACE,
@@ -64,8 +64,8 @@ public class LineGraph extends Graph {
     }
   }
 
-  private static AnalyzationResult analyze(int[][] data) {
-    AnalyzationResult result = new AnalyzationResult();
+  private static LGAnalyzationResult analyze(int[][] data) {
+    LGAnalyzationResult result = new LGAnalyzationResult();
     int min = data[0][0], max = data[0][0];
     int maxLength = 0;
     for (int[] row : data) {
