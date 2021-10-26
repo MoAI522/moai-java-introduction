@@ -101,10 +101,10 @@ public class LineGraph extends Graph {
     double range = max - min;
     result.vStep = 1;
     while (true) {
-      if (range / result.vStep + 1 < 10)
+      if (range / result.vStep < 9)
         break;
       result.vStep *= 5;
-      if (range / result.vStep + 1 < 10)
+      if (range / result.vStep < 9)
         break;
       result.vStep *= 2;
     }
