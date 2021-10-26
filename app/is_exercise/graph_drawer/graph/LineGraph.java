@@ -11,7 +11,7 @@ import util.HSVColor;
 import util.Rect;
 
 class LGAnalyzationResult {
-  public int vBegin, vEnd, vStep, hBegin, hEnd, hStep;
+  public int vBegin, vEnd, vStep, vLineNumber, hNumber, hStep;
 }
 
 public class LineGraph extends Graph {
@@ -44,25 +44,24 @@ public class LineGraph extends Graph {
         rect.y + rect.h - H_SCALE_SPACE);
     gc.strokeLine(rect.x + rect.w, rect.y + TOP_PADDING, rect.x + rect.w, rect.y + rect.h - H_SCALE_SPACE);
 
-    int vLineNumber = ((result.vEnd - result.vBegin) / result.vStep);
-    double vStepInPx = (rect.h - H_SCALE_SPACE - TOP_PADDING) / vLineNumber;
-    for (int v = result.vBegin, i = 0; i <= vLineNumber; v += result.vStep, i++) {
-      gc.strokeText(Integer.valueOf(v).toString(), rect.x, rect.y + TOP_PADDING + vStepInPx * (vLineNumber - i));
-      gc.strokeLine(rect.x + V_SCALE_SPACE, rect.y + TOP_PADDING + vStepInPx * (vLineNumber - i), rect.x + rect.w,
-          rect.y + TOP_PADDING + vStepInPx * (vLineNumber - i));
+    double vStepInPx = (rect.h - H_SCALE_SPACE - TOP_PADDING) / result.vLineNumber;
+    for (int i = 0; i <= result.vLineNumber; i++) {
+      gc.strokeText(Integer.valueOf(result.vBegin + result.vStep * i).toString(), rect.x,
+          rect.y + TOP_PADDING + vStepInPx * (result.vLineNumber - i));
+      gc.strokeLine(rect.x + V_SCALE_SPACE, rect.y + TOP_PADDING + vStepInPx * (result.vLineNumber - i),
+          rect.x + rect.w, rect.y + TOP_PADDING + vStepInPx * (result.vLineNumber - i));
     }
 
-    double hStepInPx = (rect.w - V_SCALE_SPACE) / (result.hEnd - 1);
-    int hScaleStep = Math.floorDiv(result.hEnd, 10) + 1;
-    for (int i = 0; i < result.hEnd; i++) {
+    double hStepInPx = (rect.w - V_SCALE_SPACE) / (result.hNumber - 1);
+    for (int i = 0; i < result.hNumber; i++) {
       double x = rect.x + V_SCALE_SPACE + hStepInPx * i;
       gc.strokeLine(x, rect.y + rect.h - H_SCALE_SPACE, x, rect.y + rect.h - H_SCALE_SPACE + H_SCALE_LENGTH);
-      if (i % hScaleStep == 0 && result.hEnd - i >= hScaleStep) {
+      if (i % result.hStep == 0 && result.hNumber - 1 - i >= result.hStep) {
         gc.strokeText(Integer.valueOf(i + 1).toString(), x + TEXT_ADJUSTMENT_X,
             rect.y + rect.h - H_SCALE_SPACE + TEXT_ADJUSTMENT_Y);
       }
     }
-    gc.strokeText(Integer.valueOf(result.hEnd).toString(), rect.x + rect.w + TEXT_ADJUSTMENT_X,
+    gc.strokeText(Integer.valueOf(result.hNumber).toString(), rect.x + rect.w + TEXT_ADJUSTMENT_X,
         rect.y + rect.h - H_SCALE_SPACE + TEXT_ADJUSTMENT_Y);
 
     double dataPxRatio = (rect.h - H_SCALE_SPACE - TOP_PADDING) / (result.vEnd - result.vBegin);
@@ -71,7 +70,7 @@ public class LineGraph extends Graph {
       double[] row = data[i];
       int[] color = new HSVColor(hueStep * i, 200, 230).getRGB();
       gc.setStroke(Color.rgb(color[0], color[1], color[2]));
-      for (int j = 1; j < row.length; j++) {
+      for (int j = 1; j < result.hNumber; j++) {
         gc.strokeLine(rect.x + V_SCALE_SPACE + hStepInPx * (j - 1),
             rect.y + rect.h - H_SCALE_SPACE - (row[j - 1] - result.vBegin) * dataPxRatio,
             rect.x + V_SCALE_SPACE + hStepInPx * j,
@@ -101,19 +100,19 @@ public class LineGraph extends Graph {
     double range = max - min;
     result.vStep = 1;
     while (true) {
-      if (range / result.vStep < 9)
+      if (range / result.vStep <= 8)
         break;
       result.vStep *= 5;
-      if (range / result.vStep < 9)
+      if (range / result.vStep <= 8)
         break;
       result.vStep *= 2;
     }
     result.vBegin = (int) Math.floor(min - (min % result.vStep));
     result.vEnd = (int) Math.floor(max + result.vStep - (max % result.vStep));
+    result.vLineNumber = (result.vEnd - result.vBegin) / result.vStep;
 
-    result.hBegin = 1;
-    result.hEnd = maxLength;
-    result.hStep = Math.floorDiv(maxLength, 10);
+    result.hNumber = maxLength;
+    result.hStep = (int) Math.ceil(maxLength / 10.0);
 
     return result;
   }

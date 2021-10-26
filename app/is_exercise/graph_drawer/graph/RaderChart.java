@@ -100,16 +100,13 @@ public class RaderChart extends Graph {
 
   private static RCAnalyzationResult analyze(double[][] data) {
     RCAnalyzationResult result = new RCAnalyzationResult();
-    double min = data[0][0], max = data[0][0];
+    double max = data[0][0];
     int maxLength = 0;
     for (double[] row : data) {
       if (maxLength < row.length) {
         maxLength = row.length;
       }
       for (double v : Arrays.copyOfRange(row, 1, row.length)) {
-        if (min > v) {
-          min = v;
-        }
         if (max < v) {
           max = v;
         }
@@ -118,10 +115,10 @@ public class RaderChart extends Graph {
 
     result.vStep = 1;
     while (true) {
-      if (max / result.vStep + 1 < 10)
+      if (max / result.vStep <= 9)
         break;
       result.vStep *= 5;
-      if (max / result.vStep + 1 < 10)
+      if (max / result.vStep <= 9)
         break;
       result.vStep *= 2;
     }

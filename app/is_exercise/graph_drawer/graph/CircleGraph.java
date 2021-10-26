@@ -53,23 +53,23 @@ public class CircleGraph extends Graph {
     DataClass[] result;
 
     switch (mode) {
-      case LITERALLY: {
-        double[] data = dm.getNumberData()[0];
-        String[] labels;
-        if (dm.getData().length >= 2) {
-          labels = dm.getData()[1];
-        } else {
-          labels = null;
-        }
-        result = analyze(data, labels);
-        break;
+    case LITERALLY: {
+      double[] data = dm.getNumberData()[0];
+      String[] labels;
+      if (dm.getData().length >= 2) {
+        labels = dm.getData()[1];
+      } else {
+        labels = null;
       }
-      case CLASSIFICATION:
-      default: {
-        String[] data = dm.getData()[0];
-        result = classify(data);
-        break;
-      }
+      result = analyze(data, labels);
+      break;
+    }
+    case CLASSIFICATION:
+    default: {
+      String[] data = dm.getData()[0];
+      result = classify(data);
+      break;
+    }
     }
 
     Rect graphArea = new Rect(rect.x, rect.y, rect.w - DESCRIPTION_WIDTH, rect.h);
@@ -94,14 +94,12 @@ public class CircleGraph extends Graph {
       gc.setFill(Color.rgb(color[0], color[1], color[2]));
       gc.fillArc(centerX - radius, centerY - radius, radius * 2, radius * 2, (1 - sum) * 360 + 90, -dc.ratio * 360,
           ArcType.ROUND);
-      if (mode == Mode.LITERALLY) {
-        gc.setTextAlign((sum > 0.5 ? TextAlignment.RIGHT : TextAlignment.LEFT));
-        gc.strokeText(Double.toString(dc.amount),
-            centerX + (radius + GRAPH_SCALE_OFFSET) * Math.cos(Math.PI * 2 * ((sum + dc.ratio / 2) - 0.25))
-                + GRAPH_SCALE_HORIZONTAL_ADJUST,
-            centerY + (radius + GRAPH_SCALE_OFFSET) * Math.sin(Math.PI * 2 * ((sum + dc.ratio / 2) - 0.25))
-                + GRAPH_SCALE_VERTICAL_ADJUST);
-      }
+      gc.setTextAlign((sum + dc.ratio / 2 > 0.5 ? TextAlignment.RIGHT : TextAlignment.LEFT));
+      gc.strokeText(mode == Mode.LITERALLY ? Double.toString(dc.amount) : dc.value,
+          centerX + (radius + GRAPH_SCALE_OFFSET) * Math.cos(Math.PI * 2 * ((sum + dc.ratio / 2) - 0.25))
+              + GRAPH_SCALE_HORIZONTAL_ADJUST,
+          centerY + (radius + GRAPH_SCALE_OFFSET) * Math.sin(Math.PI * 2 * ((sum + dc.ratio / 2) - 0.25))
+              + GRAPH_SCALE_VERTICAL_ADJUST);
       sum += dc.ratio;
 
       gc.fillRect(descriptionArea.x + DESCRIPTION_MARGIN + DESCRIPTION_PADDING,
@@ -128,7 +126,7 @@ public class CircleGraph extends Graph {
     for (int i = 0; i < data.length; i++) {
       DataClass dc = new DataClass();
       dc.amount = data[i];
-      if (labels != null) {
+      if (labels != null && i < labels.length) {
         dc.value = labels[i];
       } else {
         dc.value = Integer.toString(i + 1);
