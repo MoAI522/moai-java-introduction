@@ -6,7 +6,7 @@
     "**/.factorypath": true
   },
   "java.project.sourcePaths": [
-    "is_exercise/graph_drawer"
+    "is_exercise/turtle"
   ],
   "editor.formatOnPaste": true
 }
