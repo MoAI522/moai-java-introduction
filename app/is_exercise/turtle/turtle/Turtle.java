@@ -62,16 +62,40 @@ public class Turtle {
       if (action instanceof DrawableAction) {
         gc.setStroke(color);
         gc.setLineWidth(strokeWidth);
-        ((DrawableAction) action).draw(gc, controller, originX, originY);
+        ((DrawableAction) action).draw(gc, controller, new Point2D(originX, originY));
       }
       action.act(controller);
-      System.out.println(currentX + " " + currentY + " " + currentAngle + " ");
     });
   }
 
   public void translate(Point2D point) {
     this.originX = point.getX();
     this.originY = point.getY();
+  }
+
+  public boolean isEnter(Point2D point) {
+    ArrayList<Point2D> allVertices = new ArrayList<>();
+    actions.stream().forEach((action) -> {
+      if (action instanceof DrawableAction) {
+        Point2D[] vertices = ((DrawableAction) action).getVertices(controller);
+        for (Point2D vertex : vertices) {
+          allVertices.add(vertex);
+        }
+      }
+      action.act(controller);
+    });
+
+    ArrayList<Point2D> polygon = new ArrayList<>();
+
+    Point2D farthest = new Point2D(0, 0);
+
+    allVertices.forEach((vertex) -> {
+      if (vertex.magnitude() > farthest.magnitude()) {
+        farthest = vertex;
+      }
+    });
+
+    return false;
   }
 
   public class Controller {
