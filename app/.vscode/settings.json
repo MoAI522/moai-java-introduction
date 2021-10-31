@@ -6,7 +6,8 @@
     "**/.factorypath": true
   },
   "java.project.sourcePaths": [
-    "is_exercise/turtle"
+    "is_exercise/turtle",
+    "language1/graphics"
   ],
   "editor.formatOnPaste": true
 }
