@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.stage.Stage;
 import turtle.Turtle;
 import window.WindowManager;
@@ -10,6 +11,7 @@ public class Main extends Application {
 
     Turtle t = new Turtle(200, 200);
     square(t);
+    t.isEnter(new Point2D(0, 0));
     t.paint(wm.getGC());
   }
 

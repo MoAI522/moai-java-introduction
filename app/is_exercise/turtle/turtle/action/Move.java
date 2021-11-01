@@ -30,14 +30,15 @@ public class Move extends DrawableAction {
 
   @Override
   public Point2D[] getVertices(Turtle.Controller tController) {
-    double fromX = tController.getX();
-    double fromY = tController.getY();
+    Point2D from = new Point2D(tController.getX(), tController.getY());
     double rad = Math.PI * 2 * (tController.getAngle() / 360);
-    double toX = fromX + length * Math.cos(rad);
-    double toY = fromY + length * Math.sin(rad);
-    Point2D[] ret = new Point2D[2];
-    ret[0] = new Point2D(fromX, fromY);
-    ret[1] = new Point2D(toX, toY);
+    Point2D to = from.add(new Point2D(length * Math.cos(rad), length * Math.sin(rad)));
+    Point2D widthVector = new Point2D(-(to.getY() - from.getY()), (to.getX() - from.getX()));
+    Point2D[] ret = new Point2D[4];
+    ret[0] = from.add(widthVector.multiply(-0.5));
+    ret[1] = to.add(widthVector.multiply(-0.5));
+    ret[2] = to.add(widthVector.multiply(0.5));
+    ret[3] = from.add(widthVector.multiply(0.5));
     return ret;
   }
 }

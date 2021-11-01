@@ -1,6 +1,7 @@
 package turtle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -26,6 +27,8 @@ public class Turtle {
   private Color color;
   private ArrayList<Action> actions;
   private Controller controller;
+
+  private Point2D[] hitbox;
 
   public Turtle(double x, double y) {
     this.currentX = 0;
@@ -66,6 +69,16 @@ public class Turtle {
       }
       action.act(controller);
     });
+
+    gc.setFill(Color.rgb(255, 0, 0, 0.5));
+    gc.fillPolygon(Arrays.stream(hitbox).mapToDouble((p) -> {
+      return p.getX() + originX;
+    }).toArray(), Arrays.stream(hitbox).mapToDouble((p) -> {
+      return p.getY() + originY;
+    }).toArray(), hitbox.length);
+    System.out.println(Arrays.stream(hitbox).mapToDouble((p) -> {
+      return p.getX() + originX;
+    }).toArray()[0]);
   }
 
   public void translate(Point2D point) {
@@ -87,13 +100,62 @@ public class Turtle {
 
     ArrayList<Point2D> polygon = new ArrayList<>();
 
-    Point2D farthest = new Point2D(0, 0);
+    Point2D currentVertex = allVertices.get(0);
+    Point2D currentDirection = new Point2D(1, 0);
+    int currentIndex = 0, startIndex = 0;
 
-    allVertices.forEach((vertex) -> {
-      if (vertex.magnitude() > farthest.magnitude()) {
-        farthest = vertex;
+    for (int i = 1; i < allVertices.size(); i++) {
+      Point2D vertex = allVertices.get(i);
+      if (vertex.getY() < currentVertex.getY()) {
+        currentVertex = vertex;
+        startIndex = i;
+        currentIndex = i;
       }
-    });
+    }
+
+    polygon.add(currentVertex);
+
+    while (true) {
+      Point2D nextVertex = currentVertex;
+      Point2D nextDirection = currentDirection;
+      int nextIndex = currentIndex;
+      double minRad = Math.PI * 2;
+
+      for (int i = 0; i < allVertices.size(); i++) {
+        if (i == currentIndex)
+          continue;
+        Point2D vertex = allVertices.get(i);
+        Point2D direction = vertex.subtract(currentVertex).normalize();
+        double cosVal = currentDirection.dotProduct(direction);
+        double sinVal = currentDirection.crossProduct(direction).magnitude();
+        double rad;
+        if (cosVal > 0 && sinVal >= 0) {
+          rad = Math.asin(sinVal);
+        } else if (cosVal <= 0 && sinVal > 0) {
+          rad = Math.PI / 2 + -Math.acos(cosVal);
+        } else if (cosVal < 0 && sinVal <= 0) {
+          rad = Math.PI + -Math.asin(sinVal);
+        } else {
+          rad = Math.PI / 2 * 3 + Math.acos(cosVal);
+        }
+        if (rad < minRad) {
+          nextVertex = vertex;
+          nextDirection = direction;
+          nextIndex = i;
+          minRad = rad;
+        }
+      }
+
+      if (nextIndex == startIndex || nextIndex == currentIndex)
+        break;
+      polygon.add(nextVertex);
+      currentVertex = nextVertex;
+      currentDirection = nextDirection;
+      currentIndex = nextIndex;
+    }
+
+    hitbox = polygon.toArray(new Point2D[polygon.size()]);
+    System.out.println(polygon);
 
     return false;
   }
