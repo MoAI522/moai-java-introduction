@@ -11,6 +11,6 @@ public class Turn extends Action {
 
   @Override
   public void act(Turtle.Controller tController) {
-    tController.setAngle((tController.getAngle() + amount) % 360);
+    tController.setAngle((tController.getAngle() - amount) % 360);
   }
 }

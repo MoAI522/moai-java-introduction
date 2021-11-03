@@ -1,7 +1,6 @@
 package turtle;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,7 +27,8 @@ public class Turtle {
   private ArrayList<Action> actions;
   private Controller controller;
 
-  private Point2D[] hitbox;
+  // private Point2D[] hitbox;
+  // private Point2D[] currentVertices;
 
   public Turtle(double x, double y) {
     this.currentX = 0;
@@ -70,15 +70,16 @@ public class Turtle {
       action.act(controller);
     });
 
-    gc.setFill(Color.rgb(255, 0, 0, 0.5));
-    gc.fillPolygon(Arrays.stream(hitbox).mapToDouble((p) -> {
-      return p.getX() + originX;
-    }).toArray(), Arrays.stream(hitbox).mapToDouble((p) -> {
-      return p.getY() + originY;
-    }).toArray(), hitbox.length);
-    System.out.println(Arrays.stream(hitbox).mapToDouble((p) -> {
-      return p.getX() + originX;
-    }).toArray()[0]);
+    // gc.setFill(Color.rgb(255, 0, 0, 0.5));
+    // gc.fillPolygon(Arrays.stream(hitbox).mapToDouble((p) -> {
+    // return p.getX() + originX;
+    // }).toArray(), Arrays.stream(hitbox).mapToDouble((p) -> {
+    // return p.getY() + originY;
+    // }).toArray(), hitbox.length);
+    // gc.setFill(Color.rgb(255, 0, 0));
+    // for (Point2D v : currentVertices) {
+    // gc.fillOval(v.getX() - 2 + originX, v.getY() - 2 + originY, 4, 4);
+    // }
   }
 
   public void translate(Point2D point) {
@@ -86,7 +87,7 @@ public class Turtle {
     this.originY = point.getY();
   }
 
-  public boolean isEnter(Point2D point) {
+  public Point2D find(Point2D target) {
     ArrayList<Point2D> allVertices = new ArrayList<>();
     actions.stream().forEach((action) -> {
       if (action instanceof DrawableAction) {
@@ -97,6 +98,7 @@ public class Turtle {
       }
       action.act(controller);
     });
+    // currentVertices = allVertices.toArray(new Point2D[allVertices.size()]);
 
     ArrayList<Point2D> polygon = new ArrayList<>();
 
@@ -129,14 +131,10 @@ public class Turtle {
         double cosVal = currentDirection.dotProduct(direction);
         double sinVal = currentDirection.crossProduct(direction).magnitude();
         double rad;
-        if (cosVal > 0 && sinVal >= 0) {
-          rad = Math.asin(sinVal);
-        } else if (cosVal <= 0 && sinVal > 0) {
-          rad = Math.PI / 2 + -Math.acos(cosVal);
-        } else if (cosVal < 0 && sinVal <= 0) {
-          rad = Math.PI + -Math.asin(sinVal);
+        if (sinVal >= 0) {
+          rad = Math.acos(cosVal);
         } else {
-          rad = Math.PI / 2 * 3 + Math.acos(cosVal);
+          rad = Math.PI * 2 + -Math.acos(cosVal);
         }
         if (rad < minRad) {
           nextVertex = vertex;
@@ -154,10 +152,19 @@ public class Turtle {
       currentIndex = nextIndex;
     }
 
-    hitbox = polygon.toArray(new Point2D[polygon.size()]);
-    System.out.println(polygon);
+    // hitbox = polygon.toArray(new Point2D[polygon.size()]);
 
-    return false;
+    Point2D targetRelativePos = target.subtract(new Point2D(originX, originY));
+    for (int i = 0; i < polygon.size(); i++) {
+      Point2D edgeDirection = polygon.get((i + 1) % polygon.size()).subtract(polygon.get(i)).normalize();
+      Point2D targetDirection = targetRelativePos.subtract(polygon.get(i)).normalize();
+      double sinVal = edgeDirection.crossProduct(targetDirection).getZ();
+      if (sinVal < 0) {
+        return null;
+      }
+    }
+
+    return targetRelativePos;
   }
 
   public class Controller {

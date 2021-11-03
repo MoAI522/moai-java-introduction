@@ -10,12 +10,15 @@ public class WindowManager {
   private final static int defaultWidth = 640;
   private final static int defaultHeight = 480;
 
+  private Canvas canvas;
   private GraphicsContext gc;
-  private IOnResizeFunc onResize;
+  private Runnable onRender;
 
   public WindowManager(Stage st) {
     Group root = new Group();
-    Canvas canvas = new Canvas(defaultWidth, defaultHeight);
+    canvas = new Canvas();
+    canvas.widthProperty().bind(st.widthProperty());
+    canvas.heightProperty().bind(st.heightProperty());
     root.getChildren().add(canvas);
 
     gc = canvas.getGraphicsContext2D();
@@ -24,25 +27,28 @@ public class WindowManager {
     st.setScene(scene);
     st.setTitle("Turtle Graphics");
 
-    st.widthProperty().addListener((obs, oldValue, newValue) -> {
-      if (onResize == null)
-        return;
-      onResize.run(newValue.intValue(), st.heightProperty().intValue());
-    });
-    st.heightProperty().addListener((obs, oldValue, newValue) -> {
-      if (onResize == null)
-        return;
-      onResize.run(st.widthProperty().intValue(), newValue.intValue());
-    });
+    st.widthProperty().addListener((obs, oldValue, newValue) -> update());
+    st.heightProperty().addListener((obs, oldValue, newValue) -> update());
 
     st.show();
   }
 
-  public void setOnResize(IOnResizeFunc onResize) {
-    this.onResize = onResize;
+  public void update() {
+    gc.clearRect(0, 0, canvas.widthProperty().doubleValue(), canvas.heightProperty().doubleValue());
+    if (onRender == null)
+      return;
+    onRender.run();
+  }
+
+  public void setOnRender(Runnable onResize) {
+    this.onRender = onResize;
   }
 
   public GraphicsContext getGC() {
     return gc;
+  }
+
+  public Canvas getCanvas() {
+    return canvas;
   }
 }

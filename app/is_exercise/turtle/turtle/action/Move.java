@@ -33,12 +33,13 @@ public class Move extends DrawableAction {
     Point2D from = new Point2D(tController.getX(), tController.getY());
     double rad = Math.PI * 2 * (tController.getAngle() / 360);
     Point2D to = from.add(new Point2D(length * Math.cos(rad), length * Math.sin(rad)));
-    Point2D widthVector = new Point2D(-(to.getY() - from.getY()), (to.getX() - from.getX()));
+    Point2D direction = new Point2D(to.getX(), to.getY()).subtract(from).normalize();
+    Point2D widthVector = new Point2D(-direction.getY(), direction.getX()).multiply(tController.getStrokeWidth());
     Point2D[] ret = new Point2D[4];
-    ret[0] = from.add(widthVector.multiply(-0.5));
-    ret[1] = to.add(widthVector.multiply(-0.5));
-    ret[2] = to.add(widthVector.multiply(0.5));
-    ret[3] = from.add(widthVector.multiply(0.5));
+    ret[0] = from.subtract(direction.multiply(tController.getStrokeWidth() / 2)).add(widthVector.multiply(-0.5));
+    ret[1] = to.add(direction.multiply(tController.getStrokeWidth() / 2)).add(widthVector.multiply(-0.5));
+    ret[2] = to.add(direction.multiply(tController.getStrokeWidth() / 2)).add(widthVector.multiply(0.5));
+    ret[3] = from.subtract(direction.multiply(tController.getStrokeWidth() / 2)).add(widthVector.multiply(0.5));
     return ret;
   }
 }
