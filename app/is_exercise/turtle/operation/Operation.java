@@ -2,6 +2,7 @@ package operation;
 
 import java.util.Random;
 
+import javafx.geometry.Point2D;
 import turtle.Turtle;
 
 public class Operation {
@@ -33,15 +34,11 @@ public class Operation {
     }
   }
 
-  public static void random(Turtle t) {
-    int n = 50;
-    int magnitude = 30;
-    int maxPenSize = 10;
-    Random rand = new Random();
-    for (int i = 0; i < n; i++) {
-      t.penSize(maxPenSize * rand.nextDouble());
-      t.move(magnitude * rand.nextDouble());
-      t.turn(90 * rand.nextDouble());
-    }
+  public static void test(Turtle t) {
+    t.penSize(20);
+    t.circle(80, false);
+    t.jump(200);
+    t.circle(30, true);
+    t.find(new Point2D(0, 0));
   }
 }

@@ -1,6 +1,7 @@
 package turtle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -8,7 +9,10 @@ import javafx.scene.paint.Color;
 import turtle.action.Action;
 import turtle.action.ChangeColor;
 import turtle.action.ChangePenSize;
+import turtle.action.Circle;
+import turtle.action.CubicBezier;
 import turtle.action.DrawableAction;
+import turtle.action.Jump;
 import turtle.action.Move;
 import turtle.action.Turn;
 
@@ -27,8 +31,8 @@ public class Turtle {
   private ArrayList<Action> actions;
   private Controller controller;
 
-  // private Point2D[] hitbox;
-  // private Point2D[] currentVertices;
+  private Point2D[] hitbox;
+  private Point2D[] currentVertices;
 
   public Turtle(double x, double y) {
     this.currentX = 0;
@@ -48,6 +52,18 @@ public class Turtle {
     actions.add(new Move(length));
   }
 
+  public void cbezier(double length, Point2D c1, Point2D c2) {
+    actions.add(new CubicBezier(length, c1, c2));
+  }
+
+  public void jump(double length) {
+    actions.add(new Jump(length));
+  }
+
+  public void circle(double radius, boolean isFill) {
+    actions.add(new Circle(radius, isFill));
+  }
+
   public void turn(double deg) {
     actions.add(new Turn(deg));
   }
@@ -64,22 +80,25 @@ public class Turtle {
     actions.stream().forEach((action) -> {
       if (action instanceof DrawableAction) {
         gc.setStroke(color);
+        gc.setFill(color);
         gc.setLineWidth(strokeWidth);
         ((DrawableAction) action).draw(gc, controller, new Point2D(originX, originY));
       }
       action.act(controller);
     });
 
-    // gc.setFill(Color.rgb(255, 0, 0, 0.5));
-    // gc.fillPolygon(Arrays.stream(hitbox).mapToDouble((p) -> {
-    // return p.getX() + originX;
-    // }).toArray(), Arrays.stream(hitbox).mapToDouble((p) -> {
-    // return p.getY() + originY;
-    // }).toArray(), hitbox.length);
-    // gc.setFill(Color.rgb(255, 0, 0));
-    // for (Point2D v : currentVertices) {
-    // gc.fillOval(v.getX() - 2 + originX, v.getY() - 2 + originY, 4, 4);
-    // }
+    gc.setFill(Color.rgb(255, 0, 0, 0.5));
+    if (hitbox == null)
+      return;
+    gc.fillPolygon(Arrays.stream(hitbox).mapToDouble((p) -> {
+      return p.getX() + originX;
+    }).toArray(), Arrays.stream(hitbox).mapToDouble((p) -> {
+      return p.getY() + originY;
+    }).toArray(), hitbox.length);
+    gc.setFill(Color.rgb(255, 0, 0));
+    for (Point2D v : currentVertices) {
+      gc.fillOval(v.getX() - 2 + originX, v.getY() - 2 + originY, 4, 4);
+    }
   }
 
   public void translate(Point2D point) {
@@ -98,7 +117,7 @@ public class Turtle {
       }
       action.act(controller);
     });
-    // currentVertices = allVertices.toArray(new Point2D[allVertices.size()]);
+    currentVertices = allVertices.toArray(new Point2D[allVertices.size()]);
 
     ArrayList<Point2D> polygon = new ArrayList<>();
 
@@ -136,7 +155,7 @@ public class Turtle {
         } else {
           rad = Math.PI * 2 + -Math.acos(cosVal);
         }
-        if (rad < minRad) {
+        if (rad < minRad && vertex.subtract(currentVertex).magnitude() > 0) {
           nextVertex = vertex;
           nextDirection = direction;
           nextIndex = i;
@@ -152,7 +171,7 @@ public class Turtle {
       currentIndex = nextIndex;
     }
 
-    // hitbox = polygon.toArray(new Point2D[polygon.size()]);
+    hitbox = polygon.toArray(new Point2D[polygon.size()]);
 
     Point2D targetRelativePos = target.subtract(new Point2D(originX, originY));
     for (int i = 0; i < polygon.size(); i++) {
