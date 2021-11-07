@@ -22,6 +22,7 @@ public class Turtle {
   private final static double defaultAngle = 0.0;
   private final static double defaultStrokeWidth = 1.0;
   private final static Color defaultColor = Color.GREEN;
+  private final static boolean showHitbox = false;
 
   private double currentX, currentY;
   private double originX, originY;
@@ -30,6 +31,8 @@ public class Turtle {
   private Color color;
   private ArrayList<Action> actions;
   private Controller controller;
+  private Point2D savedPoint;
+  private double savedAngle;
 
   private Point2D[] hitbox;
   private Point2D[] currentVertices;
@@ -44,6 +47,7 @@ public class Turtle {
     this.color = defaultColor;
     this.actions = new ArrayList<>();
     this.controller = new Controller();
+    this.savedPoint = new Point2D(0, 0);
 
     actions.add(new Init());
   }
@@ -76,6 +80,14 @@ public class Turtle {
     actions.add(new ChangeColor(c));
   }
 
+  public void save() {
+    actions.add(new Save());
+  }
+
+  public void reset() {
+    actions.add(new Reset());
+  }
+
   public void paint(GraphicsContext gc) {
     actions.stream().forEach((action) -> {
       if (action instanceof DrawableAction) {
@@ -88,7 +100,7 @@ public class Turtle {
     });
 
     gc.setFill(Color.rgb(255, 0, 0, 0.5));
-    if (hitbox == null)
+    if (showHitbox == false || hitbox == null)
       return;
     gc.fillPolygon(Arrays.stream(hitbox).mapToDouble((p) -> {
       return p.getX() + originX;
@@ -207,6 +219,14 @@ public class Turtle {
       return Turtle.this.color;
     }
 
+    public Point2D getSavedPoint() {
+      return Turtle.this.savedPoint;
+    }
+
+    public double getSavedAngle() {
+      return Turtle.this.savedAngle;
+    }
+
     public void setX(double x) {
       Turtle.this.currentX = x;
     }
@@ -226,6 +246,14 @@ public class Turtle {
     public void setColor(Color color) {
       Turtle.this.color = color;
     }
+
+    public void setSavedPoint(Point2D pos) {
+      Turtle.this.savedPoint = pos;
+    }
+
+    public void setSavedAngle(double angle) {
+      Turtle.this.savedAngle = angle;
+    }
   }
 
   private class Init extends Action {
@@ -235,6 +263,21 @@ public class Turtle {
       tController.setAngle(Turtle.defaultAngle);
       tController.setStrokeWidth(Turtle.defaultStrokeWidth);
       tController.setColor(Turtle.defaultColor);
+    }
+  }
+
+  private class Save extends Action {
+    public void act(Turtle.Controller tController) {
+      tController.setSavedPoint(new Point2D(tController.getX(), tController.getY()));
+      tController.setSavedAngle(tController.getAngle());
+    }
+  }
+
+  private class Reset extends Action {
+    public void act(Turtle.Controller tController) {
+      tController.setX(tController.getSavedPoint().getX());
+      tController.setY(tController.getSavedPoint().getY());
+      tController.setAngle(tController.getSavedAngle());
     }
   }
 }

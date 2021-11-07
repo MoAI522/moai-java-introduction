@@ -31,7 +31,7 @@ public class CubicBezier extends DrawableAction {
     Point2D to = from.add(direction.multiply(length));
     Point2D absC1 = from.add(new Point2D(c1.getX() * Math.cos(rad) + c1.getY() * -Math.sin(rad),
         c1.getX() * Math.sin(rad) + c1.getY() * Math.cos(rad)));
-    Point2D absC2 = to.add(new Point2D(c2.getX() * Math.cos(rad) + c2.getY() * -Math.sin(rad),
+    Point2D absC2 = from.add(new Point2D(c2.getX() * Math.cos(rad) + c2.getY() * -Math.sin(rad),
         c2.getX() * Math.sin(rad) + c2.getY() * Math.cos(rad)));
     gc.beginPath();
     gc.moveTo(from.getX(), from.getY());
@@ -47,7 +47,7 @@ public class CubicBezier extends DrawableAction {
     Point2D to = from.add(direction.multiply(length));
     Point2D absC1 = from.add(new Point2D(c1.getX() * Math.cos(rad) + c1.getY() * -Math.sin(rad),
         c1.getX() * Math.sin(rad) + c1.getY() * Math.cos(rad)));
-    Point2D absC2 = to.add(new Point2D(c2.getX() * Math.cos(rad) + c2.getY() * -Math.sin(rad),
+    Point2D absC2 = from.add(new Point2D(c2.getX() * Math.cos(rad) + c2.getY() * -Math.sin(rad),
         c2.getX() * Math.sin(rad) + c2.getY() * Math.cos(rad)));
     Point2D[] ret = { from, to, absC1, absC2 };
     return ret;

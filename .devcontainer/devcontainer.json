@@ -12,6 +12,7 @@
     "vscjava.vscode-maven",
     "vscjava.vscode-java-dependency",
     "vscjava.vscode-java-test",
-    "visualstudioexptteam.vscodeintellicode"
+    "visualstudioexptteam.vscodeintellicode",
+    "ms-python.python"
   ]
 }

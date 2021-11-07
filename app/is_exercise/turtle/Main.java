@@ -12,6 +12,8 @@ public class Main extends Application {
     WindowManager wm = new WindowManager(st);
     TurtleManager tm = new TurtleManager();
 
+    Operation.load();
+
     // Turtle t1 = new Turtle(200, 200);
     // Operation.square(t1);
     // tm.add(t1);
@@ -24,8 +26,8 @@ public class Main extends Application {
     // Operation.polygons(t3, 10, 80);
     // tm.add(t3);
 
-    Turtle t4 = new Turtle(100, 100);
-    Operation.test(t4);
+    Turtle t4 = new Turtle(30, 100);
+    Operation.symbols(t4, 200);
     tm.add(t4);
 
     tm.draw(wm.getGC());
