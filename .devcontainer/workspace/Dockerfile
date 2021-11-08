@@ -21,8 +21,6 @@ RUN apt-get update -y && \
 RUN curl -o "/root/bellsoft-jdk11.deb" https://download.bell-sw.com/java/11.0.12+7/bellsoft-jdk11.0.12+7-linux-amd64-full.deb && \
   apt install -y /root/bellsoft-jdk11.deb
 
-RUN pip install -r /workspace/app/requirements.txt
-
 #add ssh secret-key
 COPY .dummy .ssh/* /root/.ssh/
 

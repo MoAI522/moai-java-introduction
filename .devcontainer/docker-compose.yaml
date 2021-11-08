@@ -5,6 +5,6 @@ services:
     build: workspace
     working_dir: "/workspace/"
     command: >
-      bash -c "sleep infinity"
+      bash -c "pip install -r /workspace/app/requirements.txt && sleep infinity"
     volumes:
       - ../:/workspace/
