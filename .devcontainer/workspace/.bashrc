@@ -116,3 +116,6 @@ if type __git_ps1 > /dev/null 2>&1 ; then
   GIT_PS1_SHOWUPSTREAM="auto"
   GIT_PS1_SHOWCOLORHINTS=true
 fi
+
+export LANG=ja_JP.UTF-8
+export LANGUAGE=ja_JP:ja
