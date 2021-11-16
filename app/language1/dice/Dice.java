@@ -9,7 +9,7 @@ public class Dice {
 
   public void start(double[] p) {
     int n = p.length;
-    int count[] = new int[n];
+    int count[] = new int[n + 1];
     long startTime = System.currentTimeMillis();
 
     for (int i = 0; i < 100000000; i++) {
@@ -19,24 +19,23 @@ public class Dice {
     long endTime = System.currentTimeMillis();
     System.out.println("処理時間: " + (endTime - startTime) + "msec");
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 1; i < n + 1; i++) {
       double rate = (double) count[i] / 100000000;
-      double gap = rate - p[i];
-      System.out.printf("%d:%10d (%6f, %+6f)\n", i + 1, count[i], rate, gap);
+      double gap = rate - p[i - 1];
+      System.out.printf("%d:%10d (%6f, %+6f)\n", i, count[i], rate, gap);
     }
   }
 
   public int dice(double[] p) {
     double rand = ThreadLocalRandom.current().nextDouble();
-    int len = p.length;
     double sum = 0;
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < p.length; i++) {
       sum += p[i];
       if (rand < sum) {
-        return i;
+        return i + 1;
       }
     }
 
-    return len - 1;
+    return p.length - 1;
   }
 }
