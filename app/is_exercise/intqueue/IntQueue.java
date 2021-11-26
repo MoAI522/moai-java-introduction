@@ -1,39 +1,45 @@
 public class IntQueue {
   final int SIZE = 10;
   private int[] values = new int[SIZE];
-  private volatile int tail = -1;
+  private int tail = -1;
+  private int count = 0;
 
   synchronized boolean enqueue(int data) {
     if (data < 0) {
       return false;
     }
-    if (tail == SIZE - 1) {
-      return false;
+    try {
+      while (tail == SIZE - 1) {
+        System.out.println("queue is full. waiting for dequeue()");
+        wait();
+      }
+    } catch (InterruptedException e) {
     }
     tail++;
     values[tail] = data;
-    System.out.println("enqueue :" + data + " tail:" + tail);
+    count++;
+    System.out.println("[" + count + "]enqueue :" + data + " tail:" + tail);
+    notify();
     return true;
   }
 
-  int dequeue() {
-    if (isEmpty()) {
-      return -1;
-    }
-    int data;
-    synchronized (this) {
-      data = values[0];
-      for (int i = 0; i < SIZE - 1; i++) {
-        values[i] = values[i + 1];
+  synchronized int dequeue() {
+    try {
+      while (tail == -1) {
+        System.out.println("queue is empty. waiting for enqueue().");
+        wait();
       }
-      tail--;
-      System.out.println("dequeue :" + data + " tail:" + tail);
+    } catch (InterruptedException e) {
     }
+    int data = values[0];
+    for (int i = 0; i < SIZE - 1; i++) {
+      values[i] = values[i + 1];
+    }
+    tail--;
+    count++;
+    System.out.println("[" + count + "]dequeue :" + data + " tail:" + tail);
+    notify();
     return data;
-  }
-
-  boolean isEmpty() {
-    return (tail == -1);
   }
 
   public static void main(String[] args) {
