@@ -33,7 +33,7 @@ public class Clock extends JPanel implements Runnable {
   Rectangle buttonRect;
   Rectangle displayRect;
 
-  int state = 2;
+  int state = 0;
   boolean transitionCompleted = true;
   boolean clickingButton = false;
   boolean clickingDisplay = false;
