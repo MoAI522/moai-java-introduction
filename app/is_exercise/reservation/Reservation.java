@@ -32,7 +32,7 @@ public class Reservation {
   void printSeat() {
     for (int i = 0; i < seat.length; i++) {
       for (int j = 0; j < seat[i].length; j++) {
-        System.out.print(seat[i][j] + " ");
+        System.out.print((seat[i][j] >> 8) + "" + (char) ('a' + (0x000000ff & seat[i][j])) + " ");
       }
       System.out.println();
     }
@@ -68,10 +68,10 @@ class Passengers extends Thread {
   public void run() {
     for (int i = 0; i < 10; i++) {
       int num = (int) (Math.random() * 6 + 1);
-      if (rs.reserve(id, num)) {
-        System.out.println("ID:" + id + "  reserved " + num + " seats.");
+      if (rs.reserve((int) ((id << 8) + i), num)) {
+        System.out.println("ID:" + id + "(" + (char) ('a' + i) + ")" + "  reserved " + num + " seats.");
       } else {
-        System.out.println("ID:" + id + "  failed to reserve seats.");
+        System.out.println("ID:" + id + "(" + (char) ('a' + i) + ")" + "  failed to reserve seats.");
       }
     }
   }
