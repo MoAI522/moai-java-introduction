@@ -52,7 +52,7 @@ public class Sort {
   }
 
   public static void main(String args[]) {
-    // new Sort(100000, Type.BUBBLE);
+    new Sort(100000, Type.BUBBLE);
     new Sort(100000, Type.QUICK);
   }
 }
