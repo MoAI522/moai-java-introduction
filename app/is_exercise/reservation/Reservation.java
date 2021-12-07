@@ -12,14 +12,14 @@ public class Reservation {
 
   synchronized boolean reserve(int id, int num) {
     for (int i = 0; i < seat.length; i++) {
-      for (int j = 0; j < seat[i].length - num; j++) {
+      for (int j = 0; j < seat[i].length - num + 1; j++) {
         int k;
         for (k = 0; k < num; k++) {
           if (seat[i][j + k] != -1)
             break;
         }
         if (k == num) {
-          for (k -= 1; k >= 0; k--) {
+          for (k = 0; k < num; k++) {
             seat[i][j + k] = id;
           }
           return true;
@@ -71,7 +71,7 @@ class Passengers extends Thread {
       if (rs.reserve((int) ((id << 8) + i), num)) {
         System.out.println("ID:" + id + "(" + (char) ('a' + i) + ")" + "  reserved " + num + " seats.");
       } else {
-        System.out.println("ID:" + id + "(" + (char) ('a' + i) + ")" + "  failed to reserve seats.");
+        System.out.println("ID:" + id + "(" + (char) ('a' + i) + ")" + "  failed to reserve " + num + " seats.");
       }
     }
   }
