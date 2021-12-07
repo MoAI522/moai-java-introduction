@@ -2,38 +2,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Sort {
-  private enum Type {
-    BUBBLE, QUICK
-  }
-
-  private int array[];
-
-  public Sort(int n, Type type) {
-    array = new int[n];
+  public Sort(int n) {
+    int[] array1 = new int[n];
     for (int i = 0; i < n; i++) {
-      array[i] = (int) (Math.random() * Integer.MAX_VALUE);
+      array1[i] = (int) (Math.random() * Integer.MAX_VALUE);
     }
+    int[] array2 = array1.clone();
 
-    switch (type) {
-      case BUBBLE: {
-        long start = System.currentTimeMillis();
-        BubbleSort bs = new BubbleSort(array);
-        array = bs.getArray();
-        // printArray(array);
-        long end = System.currentTimeMillis();
-        System.out.println("bubble sort: " + sortCheck(array) + ", Processing time: " + (end - start) + "ms");
-        break;
-      }
-      case QUICK: {
-        long start = System.currentTimeMillis();
-        QuickSort qs = new QuickSort(array);
-        array = qs.getArray();
-        // printArray(array);
-        long end = System.currentTimeMillis();
-        System.out.println("quick sort: " + sortCheck(array) + ", Processing time: " + (end - start) + "ms");
-        break;
-      }
-    }
+    long start = System.currentTimeMillis();
+    BubbleSort bs = new BubbleSort(array1);
+    array1 = bs.getArray();
+    long end = System.currentTimeMillis();
+    System.out.println("bubble sort: " + sortCheck(array1) + ", Processing time: " + (end - start) + "ms");
+    
+    start = System.currentTimeMillis();
+    QuickSort qs = new QuickSort(array2);
+    array2 = qs.getArray();
+    end = System.currentTimeMillis();
+    System.out.println("quick sort: " + sortCheck(array2) + ", Processing time: " + (end - start) + "ms");
   }
 
   public static boolean sortCheck(int array[]) {
@@ -44,16 +30,8 @@ public class Sort {
     return true;
   }
 
-  public static void printArray(int array[]) {
-    for (int i = 0; i < array.length; i++) {
-      System.out.print(array[i] + " ");
-    }
-    System.out.println();
-  }
-
   public static void main(String args[]) {
-    new Sort(100000, Type.BUBBLE);
-    new Sort(100000, Type.QUICK);
+    new Sort(100000);
   }
 }
 
