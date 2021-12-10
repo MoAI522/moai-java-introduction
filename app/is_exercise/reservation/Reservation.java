@@ -18,12 +18,11 @@ public class Reservation {
           if (seat[i][j + k] != -1)
             break;
         }
-        if (k == num) {
-          for (k = 0; k < num; k++) {
-            seat[i][j + k] = id;
-          }
-          return true;
+        if (k < num) continue;
+        for (k = 0; k < num; k++) {
+          seat[i][j + k] = id;
         }
+        return true;
       }
     }
     return false;
