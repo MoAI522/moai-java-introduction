@@ -18,7 +18,8 @@ public class Reservation {
           if (seat[i][j + k] != -1)
             break;
         }
-        if (k < num) continue;
+        if (k < num)
+          continue;
         for (k = 0; k < num; k++) {
           seat[i][j + k] = id;
         }
@@ -31,7 +32,7 @@ public class Reservation {
   void printSeat() {
     for (int i = 0; i < seat.length; i++) {
       for (int j = 0; j < seat[i].length; j++) {
-        System.out.print((seat[i][j] >> 8) + "" + (char) ('a' + (0x000000ff & seat[i][j])) + " ");
+        System.out.print((seat[i][j] >> 16) + "" + (short) (0x0000ffff & seat[i][j]) + " ");
       }
       System.out.println();
     }
@@ -39,8 +40,9 @@ public class Reservation {
 
   public static void main(String args[]) {
     int thread_num = 5;
-    Reservation rs = new Reservation(6, 15);
+    Reservation rs = new Reservation(100, 100);
     Passengers ps[] = new Passengers[thread_num];
+    long startTime = System.currentTimeMillis();
     for (int i = 0; i < thread_num; i++) {
       ps[i] = new Passengers(i, rs);
     }
@@ -50,7 +52,9 @@ public class Reservation {
       } catch (InterruptedException e) {
       }
     }
+    long endTime = System.currentTimeMillis();
     rs.printSeat();
+    System.out.println("process time: " + (endTime - startTime) + "ms");
   }
 }
 
@@ -65,12 +69,12 @@ class Passengers extends Thread {
   }
 
   public void run() {
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 1000; i++) {
       int num = (int) (Math.random() * 6 + 1);
-      if (rs.reserve((int) ((id << 8) + i), num)) {
-        System.out.println("ID:" + id + "(" + (char) ('a' + i) + ")" + "  reserved " + num + " seats.");
+      if (rs.reserve((int) ((id << 16) + i), num)) {
+        System.out.println("ID:" + id + "(" + i + ")" + "  reserved " + num + " seats.");
       } else {
-        System.out.println("ID:" + id + "(" + (char) ('a' + i) + ")" + "  failed to reserve " + num + " seats.");
+        System.out.println("ID:" + id + "(" + i + ")" + "  failed to reserve " + num + " seats.");
       }
     }
   }
