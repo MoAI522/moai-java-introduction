@@ -23,14 +23,13 @@ public class App extends Thread {
     long time = System.currentTimeMillis();
     double dt = time - previousTime;
     double fps = 1000 / dt;
-    // System.out.println("update fps:" + fps);
 
     currentScene.update(dt);
 
     graphics.draw(currentScene.draw(), fps);
 
     try {
-      sleep(10);
+      sleep(100);
     } catch (InterruptedException e) {
     }
 

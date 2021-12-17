@@ -5,7 +5,7 @@
     "**/.settings": true,
     "**/.factorypath": true
   },
-  "java.project.sourcePaths": ["is_exercise/turtle", "language1/graphics"],
+  "java.project.sourcePaths": [],
   "editor.formatOnPaste": true,
   "[python]": {
     "gitlens.codeLens.symbolScopes": ["!Module"],

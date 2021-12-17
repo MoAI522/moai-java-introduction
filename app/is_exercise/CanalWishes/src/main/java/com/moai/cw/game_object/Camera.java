@@ -3,6 +3,7 @@ package com.moai.cw.game_object;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.moai.cw.Constants;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.DPosition;
 import com.moai.cw.util.Rectangle;
@@ -11,13 +12,15 @@ public class Camera extends GameObject {
   private Rectangle fov;
 
   public Camera(Scene scene) {
-    super(scene, new DPosition(128, 112));
+    super(scene, new DPosition(256, 300));
   }
 
   @Override
   public void update(double dt) {
-    int w = 256, h = 224;
-    fov = new Rectangle(position.x - w / 2, position.y - h / 2, w, h);
+
+    fov = new Rectangle(position.x - Constants.DISPLAY_WIDTH / 2,
+        position.y - (Constants.DISPLAY_HEIGHT - Constants.STATUS_HEIGHT) / 2,
+        Constants.DISPLAY_WIDTH, Constants.DISPLAY_HEIGHT - Constants.STATUS_HEIGHT);
   }
 
   public ArrayList<GameObject> culling() {
