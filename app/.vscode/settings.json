@@ -5,16 +5,12 @@
     "**/.settings": true,
     "**/.factorypath": true
   },
-  "java.project.sourcePaths": [
-    "is_exercise/turtle",
-    "language1/graphics"
-  ],
+  "java.project.sourcePaths": ["is_exercise/turtle", "language1/graphics"],
   "editor.formatOnPaste": true,
   "[python]": {
-    "gitlens.codeLens.symbolScopes": [
-      "!Module"
-    ],
+    "gitlens.codeLens.symbolScopes": ["!Module"],
     "editor.wordBasedSuggestions": false,
     "editor.tabSize": 4
-  }
+  },
+  "java.configuration.updateBuildConfiguration": "automatic"
 }
