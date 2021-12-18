@@ -8,9 +8,11 @@ public class App extends Thread {
   private FXMain graphics;
 
   private Scene currentScene;
+  private KeyInputManager keyInputManager;
 
   public App(FXMain graphics) {
     this.graphics = graphics;
+    keyInputManager = new KeyInputManager();
     this.start();
   }
 
@@ -40,10 +42,15 @@ public class App extends Thread {
         prevCalcFPSTime = time;
       }
 
+      keyInputManager.update();
       currentScene.update(dt);
 
       graphics.draw(currentScene.draw(), fps);
     }
+  }
+
+  public KeyInputManager getKeyInputManager() {
+    return keyInputManager;
   }
 
   public static void main(String[] args) {

@@ -22,7 +22,11 @@ public abstract class Scene {
     cameras = new ArrayList<Camera>();
   }
 
-  public abstract void update(int dt);
+  public final void update(int dt) {
+    for (int key : gameObjects.keySet()) {
+      gameObjects.get(key).update(dt);
+    }
+  }
 
   public final ArrayList<GraphicObject> draw() {
     ArrayList<GraphicObject> graphicObjects = new ArrayList<GraphicObject>();
@@ -51,5 +55,9 @@ public abstract class Scene {
 
   public final HashMap<Integer, GameObject> getGameObjects() {
     return gameObjects;
+  }
+
+  public final App getApp() {
+    return app;
   }
 }

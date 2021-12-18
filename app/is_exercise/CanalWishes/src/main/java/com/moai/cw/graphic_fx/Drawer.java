@@ -1,6 +1,6 @@
 package com.moai.cw.graphic_fx;
 
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import com.moai.cw.Constants;
@@ -18,11 +18,10 @@ public class Drawer {
   }
 
   public void loadTextures() {
-    int textureNumber = 1;
-    textures = new Image[textureNumber];
-    for (int i = 0; i < textureNumber; i++) {
-      String path = Thread.currentThread().getContextClassLoader().getResource("textures/" + i + ".png").getPath();
-      textures[i] = new Image(new File(path).toURI().toString());
+    textures = new Image[Constants.TEXTURE_NUMBER];
+    for (int i = 0; i < Constants.TEXTURE_NUMBER; i++) {
+      InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("textures/" + i + ".png");
+      textures[i] = new Image(is);
     }
   }
 

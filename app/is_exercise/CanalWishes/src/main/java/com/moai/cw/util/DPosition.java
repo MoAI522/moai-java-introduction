@@ -12,6 +12,10 @@ public class DPosition {
     this.y = y;
   }
 
+  public DPosition clone() {
+    return new DPosition(x, y);
+  }
+
   public DPosition add(DPosition b) {
     return new DPosition(x + b.x, y + b.y);
   }

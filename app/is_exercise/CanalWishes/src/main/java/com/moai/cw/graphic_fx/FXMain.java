@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.moai.cw.App;
 import com.moai.cw.Constants;
+import com.moai.cw.KeyInputManager;
 import com.moai.cw.util.GraphicObject;
 
 import javafx.application.Application;
@@ -13,6 +14,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -38,6 +41,8 @@ public class FXMain extends Application {
     App app = new App(this);
 
     st.setOnCloseRequest(event -> app.stop());
+    scene.setOnKeyPressed(event -> onKeyPressed(event, app));
+    scene.setOnKeyReleased(event -> onKeyReleased(event, app));
   }
 
   public static void init(String[] args) {
@@ -58,5 +63,38 @@ public class FXMain extends Application {
     gc.drawImage(buf, 0, 0);
     gc.setFill(Color.WHITE);
     gc.fillText("FPS: " + fps, 5, 20);
+  }
+
+  private static void onKeyPressed(KeyEvent e, App app) {
+    app.getKeyInputManager().onKeyPress(translateKeyCode(e.getCode()));
+  }
+
+  private static void onKeyReleased(KeyEvent e, App app) {
+    app.getKeyInputManager().onKeyRelease(translateKeyCode(e.getCode()));
+  }
+
+  private static KeyInputManager.KeyCode translateKeyCode(KeyCode keyCode) {
+    switch (keyCode) {
+      case W:
+        return KeyInputManager.KeyCode.W;
+      case A:
+        return KeyInputManager.KeyCode.A;
+      case S:
+        return KeyInputManager.KeyCode.S;
+      case D:
+        return KeyInputManager.KeyCode.D;
+      case B:
+        return KeyInputManager.KeyCode.B;
+      case N:
+        return KeyInputManager.KeyCode.N;
+      case M:
+        return KeyInputManager.KeyCode.M;
+      case SPACE:
+        return KeyInputManager.KeyCode.SPACE;
+      case ESCAPE:
+        return KeyInputManager.KeyCode.ESC;
+      default:
+        return null;
+    }
   }
 }

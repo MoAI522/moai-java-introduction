@@ -1,8 +1,10 @@
 package com.moai.cw.scene;
 
 import com.moai.cw.App;
+import com.moai.cw.entity.Player;
 import com.moai.cw.game_object.Camera;
 import com.moai.cw.game_object.Stage;
+import com.moai.cw.util.DPosition;
 
 public class FieldScene extends Scene {
   public FieldScene(App app) {
@@ -11,12 +13,8 @@ public class FieldScene extends Scene {
     addGameObject(camera);
     addCamera(camera);
 
-    String filePath = Thread.currentThread().getContextClassLoader().getResource("map/0.csv").getPath();
-    addGameObject(new Stage(this, filePath));
-  }
+    addGameObject(new Stage(this, "map/0.csv"));
 
-  @Override
-  public void update(int dt) {
-
+    addGameObject(new Player(this, new DPosition(10, 10)));
   }
 }
