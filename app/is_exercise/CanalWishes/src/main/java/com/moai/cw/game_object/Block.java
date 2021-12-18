@@ -14,7 +14,7 @@ public class Block extends Entity {
   }
 
   @Override
-  public void update(double dt) {
+  public void update(int dt) {
 
   }
 }

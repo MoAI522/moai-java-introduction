@@ -16,7 +16,7 @@ public class Camera extends GameObject {
   }
 
   @Override
-  public void update(double dt) {
+  public void update(int dt) {
 
     fov = new Rectangle(position.x - Constants.DISPLAY_WIDTH / 2,
         position.y - (Constants.DISPLAY_HEIGHT - Constants.STATUS_HEIGHT) / 2,

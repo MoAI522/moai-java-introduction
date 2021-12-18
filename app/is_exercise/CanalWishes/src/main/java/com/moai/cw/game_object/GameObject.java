@@ -24,7 +24,7 @@ public abstract class GameObject {
     this.parent = parent;
   }
 
-  public abstract void update(double dt);
+  public abstract void update(int dt);
 
   public final void destroy() {
     for (GameObject child : children) {

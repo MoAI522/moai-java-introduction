@@ -16,7 +16,7 @@ public class FieldScene extends Scene {
   }
 
   @Override
-  public void update(double dt) {
+  public void update(int dt) {
 
   }
 }

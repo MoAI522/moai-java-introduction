@@ -22,7 +22,7 @@ public abstract class Scene {
     cameras = new ArrayList<Camera>();
   }
 
-  public abstract void update(double dt);
+  public abstract void update(int dt);
 
   public final ArrayList<GraphicObject> draw() {
     ArrayList<GraphicObject> graphicObjects = new ArrayList<GraphicObject>();

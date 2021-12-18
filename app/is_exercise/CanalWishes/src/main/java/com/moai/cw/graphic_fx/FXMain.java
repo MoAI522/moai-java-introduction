@@ -11,6 +11,8 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -43,12 +45,17 @@ public class FXMain extends Application {
   }
 
   public void draw(ArrayList<GraphicObject> objects, double fps) {
-    gc.setFill(Color.BLACK);
-    gc.fillRect(0, 0, Constants.DISPLAY_WIDTH * Constants.PIXEL_RATIO,
-        Constants.DISPLAY_HEIGHT * Constants.PIXEL_RATIO);
     if (drawer == null || gc == null)
       return;
-    drawer.drawObjects(objects, gc);
+    WritableImage buf = new WritableImage(Constants.DISPLAY_WIDTH * Constants.PIXEL_RATIO,
+        Constants.DISPLAY_HEIGHT * Constants.PIXEL_RATIO);
+    PixelWriter pw = buf.getPixelWriter();
+    drawer.drawObjects(objects, pw);
+
+    gc.setFill(Color.BLUE);
+    gc.fillRect(0, 0, Constants.DISPLAY_WIDTH * Constants.PIXEL_RATIO,
+        Constants.DISPLAY_HEIGHT * Constants.PIXEL_RATIO);
+    gc.drawImage(buf, 0, 0);
     gc.setFill(Color.WHITE);
     gc.fillText("FPS: " + fps, 5, 20);
   }

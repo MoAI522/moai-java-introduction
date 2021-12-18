@@ -50,7 +50,7 @@ public class Stage extends GameObject {
   }
 
   @Override
-  public void update(double dt) {
+  public void update(int dt) {
     return;
   }
 }
