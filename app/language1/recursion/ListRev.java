@@ -2,6 +2,7 @@ public class ListRev {
   static ListNode listRev(ListNode head) {
     ListNode currentNode = head;
     ListNode nextNode = currentNode.next;
+    nextNode.next = currentNode;
     currentNode.next = null;
     while (nextNode != null) {
       ListNode temp = nextNode.next;
