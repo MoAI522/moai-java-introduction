@@ -13,6 +13,7 @@ public class Othello extends JPanel {
   int[][] board = new int[YMAX][XMAX];
   Text t1 = new Text(20, 25, "オセロ、次の手番: 黒", new Font("Serif", Font.BOLD, 22));
   AvailablePositionResult[] currentAvailablePositions;
+  boolean lock = false;
 
   public Othello() {
     figs.add(t1);
@@ -25,58 +26,19 @@ public class Othello extends JPanel {
     setOpaque(false);
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent evt) {
+        if (lock)
+          return;
         Rect r = pick(evt.getX(), evt.getY());
         if (r == null || winner != EMPTY) {
           return;
         }
         int x = (r.getX() - MARGIN_LEFT) / CELL_WIDTH, y = (r.getY() - MARGIN_TOP) / CELL_WIDTH;
-        Position[] effects = new Position[0];
-        for (int i = 0; i <= currentAvailablePositions.length; i++) {
-          if (i == currentAvailablePositions.length)
-            return;
-          if (currentAvailablePositions[i].i == y && currentAvailablePositions[i].j == x) {
-            effects = currentAvailablePositions[i].effects;
-            break;
-          }
-        }
-        if (turn) {
-          putStone(y, x, BLACK);
-        } else {
-          putStone(y, x, WHITE);
-        }
-        for (int i = 0; i < effects.length; i++) {
-          putStone(effects[i].i, effects[i].j, turn ? BLACK : WHITE);
-        }
-        turn = !turn;
-        currentAvailablePositions = availablePosition();
-        if (currentAvailablePositions.length == 0) {
-          turn = !turn;
-          currentAvailablePositions = availablePosition();
-          if (currentAvailablePositions.length == 0) {
-            int black = 0, white = 0;
-            for (int i = 0; i < XMAX; i++) {
-              for (int j = 0; j < YMAX; j++) {
-                if (board[i][j] == BLACK)
-                  black++;
-                else if (board[i][j] == WHITE)
-                  white++;
-              }
-            }
-            if (black > white) {
-              winner = BLACK;
-            } else if (black < white) {
-              winner = WHITE;
-            } else {
-              winner = EMPTY;
-            }
-            t1.setText("終局、" + (winner != EMPTY ? (winner == BLACK ? "黒" : "白") + "の勝利!" : "まさかの引き分け!"));
-          } else {
-            t1.setText("パス、次の手番: " + (turn ? "黒" : "白"));
-          }
-        } else {
-          t1.setText("次の手番: " + (turn ? "黒" : "白"));
-        }
+        boolean passToAI = judge(x, y);
         repaint();
+        if (passToAI) {
+          lock = true;
+          new AITurn();
+        }
       }
     });
 
@@ -85,6 +47,84 @@ public class Othello extends JPanel {
     putStone(4, 3, BLACK);
     putStone(4, 4, WHITE);
     currentAvailablePositions = availablePosition();
+  }
+
+  public boolean judge(int x, int y) {
+    Position[] effects = new Position[0];
+    for (int i = 0; i <= currentAvailablePositions.length; i++) {
+      if (i == currentAvailablePositions.length)
+        return false;
+      if (currentAvailablePositions[i].i == y && currentAvailablePositions[i].j == x) {
+        effects = currentAvailablePositions[i].effects;
+        break;
+      }
+    }
+    if (turn) {
+      putStone(y, x, BLACK);
+    } else {
+      putStone(y, x, WHITE);
+    }
+    for (int i = 0; i < effects.length; i++) {
+      putStone(effects[i].i, effects[i].j, turn ? BLACK : WHITE);
+    }
+    turn = !turn;
+    currentAvailablePositions = availablePosition();
+    if (currentAvailablePositions.length == 0) {
+      turn = !turn;
+      currentAvailablePositions = availablePosition();
+      if (currentAvailablePositions.length == 0) {
+        int black = 0, white = 0;
+        for (int i = 0; i < XMAX; i++) {
+          for (int j = 0; j < YMAX; j++) {
+            if (board[i][j] == BLACK)
+              black++;
+            else if (board[i][j] == WHITE)
+              white++;
+          }
+        }
+        if (black > white) {
+          winner = BLACK;
+        } else if (black < white) {
+          winner = WHITE;
+        } else {
+          winner = EMPTY;
+        }
+        t1.setText("終局、" + (winner != EMPTY ? (winner == BLACK ? "黒" : "白(AI)") + "の勝利!" : "まさかの引き分け!"));
+        return false;
+      } else {
+        t1.setText("パス、次の手番: " + (turn ? "黒" : "白(AI)"));
+        return false;
+      }
+    } else {
+      t1.setText("次の手番: " + (turn ? "黒" : "白(AI)"));
+    }
+    return true;
+  }
+
+  class AITurn extends Thread {
+    public AITurn() {
+      this.start();
+    }
+
+    public void run() {
+      try {
+        this.sleep(1000);
+      } catch (Exception e) {
+
+      }
+
+      Position move = null;
+      int maxEffect = 0;
+      for (int i = 0; i < currentAvailablePositions.length; i++) {
+        if (currentAvailablePositions[i].effects.length > maxEffect) {
+          move = new Position(currentAvailablePositions[i].i, currentAvailablePositions[i].j);
+          maxEffect = currentAvailablePositions[i].effects.length;
+        }
+      }
+      judge(move.j, move.i);
+      repaint();
+      lock = false;
+    }
   }
 
   public Rect pick(int x, int y) {
