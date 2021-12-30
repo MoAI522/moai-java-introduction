@@ -3,8 +3,6 @@ package com.moai.cw.game_object;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.moai.cw.Constants;
-import com.moai.cw.entity.Enemy;
 import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.interfaces.OffScreenListener;
 import com.moai.cw.scene.Scene;

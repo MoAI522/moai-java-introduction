@@ -2,14 +2,12 @@ package com.moai.cw.scene;
 
 import com.moai.cw.App;
 import com.moai.cw.Constants;
-import com.moai.cw.enemy.Enemy1;
 import com.moai.cw.entity.Player;
 import com.moai.cw.game_object.Camera;
 import com.moai.cw.game_object.Stage;
 import com.moai.cw.ui.UI;
 import com.moai.cw.util.DVector2;
 import com.moai.cw.util.Rectangle;
-import com.moai.cw.util.Direction.DIRECTION;
 
 public class FieldScene extends Scene {
   public static final int[] mainLayers = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };

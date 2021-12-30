@@ -2,9 +2,6 @@ package com.moai.cw.scene;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import com.moai.cw.App;
 import com.moai.cw.game_object.Camera;
