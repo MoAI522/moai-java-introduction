@@ -8,12 +8,14 @@ import com.moai.cw.util.DVector2;
 import com.moai.cw.util.Rectangle;
 
 public abstract class Rigitbody extends Entity {
-  private final double g = 0.01;
+  private final double g = 0.02;
+
+  private double mass;
+  private double drag;
 
   private DVector2 velocity;
   private DVector2 currentForce;
-  private double mass;
-  private double drag;
+  private boolean airborne;
 
   public Rigitbody(Scene scene, GameObject parent, DVector2 position, DVector2 scale, CVector2 textureCoordinate,
       CVector2 textureSize, int textureIndex, double mass, double drag) {
@@ -22,6 +24,7 @@ public abstract class Rigitbody extends Entity {
     currentForce = new DVector2(0, mass * g);
     this.mass = mass;
     this.drag = drag;
+    airborne = false;
   }
 
   protected final void addForce(DVector2 force) {
@@ -29,10 +32,11 @@ public abstract class Rigitbody extends Entity {
   }
 
   protected final void physics(int dt) {
+    airborne = true;
+
     DVector2 dp = velocity.add(currentForce.multipleScalar(1 / drag).negate())
         .multipleScalar((mass / drag) * (1 - Math.exp(-drag / mass * dt))).add(currentForce.multipleScalar(dt / drag));
 
-    long time = System.currentTimeMillis();
     {
       Rectangle rect = new Rectangle(getPosition().x + dp.x, getPosition().y,
           getSize().x, getSize().y);
@@ -75,8 +79,11 @@ public abstract class Rigitbody extends Entity {
         double tr = 1;
         if (dp.y > 0) {
           tr = (block.getPosition().y - getRectangle().y1) / dp.y;
-          if (tr < 0)
+          if (tr < 0) {
             tr = 1;
+          } else {
+            airborne = false;
+          }
         } else if (dp.y == 0) {
           tr = 1;
         } else {
@@ -100,7 +107,15 @@ public abstract class Rigitbody extends Entity {
     return velocity.clone();
   }
 
+  protected final boolean isAirborne() {
+    return airborne;
+  }
+
   protected final void setVelocity(DVector2 velocity) {
     this.velocity = velocity;
+  }
+
+  protected final void setDrag(double drag) {
+    this.drag = drag;
   }
 }

@@ -68,7 +68,7 @@ public class FXMain extends Application {
       debugStr = debugStr + key + ": " + debugInfo.get(key) + "\n";
     }
     gc.setFill(new Color(0, 0, 0, 0.3));
-    gc.fillRect(0, 0, 150, 20 * debugInfo.size());
+    gc.fillRect(0, 0, 256, 20 * debugInfo.size());
     gc.setFill(Color.WHITE);
     gc.fillText(debugStr, 10, 20);
   }
