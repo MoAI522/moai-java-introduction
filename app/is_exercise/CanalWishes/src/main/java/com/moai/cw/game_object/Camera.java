@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.moai.cw.Constants;
+import com.moai.cw.entity.Enemy;
+import com.moai.cw.interfaces.Drawable;
+import com.moai.cw.interfaces.OffScreenListener;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.DVector2;
 import com.moai.cw.util.Rectangle;
@@ -54,26 +57,38 @@ public class Camera extends GameObject {
   }
 
   public ArrayList<GameObject> culling() {
-    HashMap<Integer, GameObject> gameObjects = scene.getGameObjects();
+    HashMap<Integer, GameObject> gameObjects = getScene().getGameObjects();
     ArrayList<GameObject> objectsToDraw = new ArrayList<GameObject>();
     for (int key : gameObjects.keySet()) {
       GameObject obj = gameObjects.get(key);
-      if (!(obj instanceof Drawable))
-        continue;
-      int i;
-      for (i = 0; i < layers.length; i++) {
-        if (((Drawable) obj).getLayer() == layers[i])
-          break;
+      if (obj instanceof Drawable) {
+        int i;
+        for (i = 0; i < layers.length; i++) {
+          if (((Drawable) obj).getLayer() == layers[i])
+            break;
+        }
+        if (i == layers.length)
+          continue;
+        Rectangle rect = ((Drawable) obj).getRectangle();
+        if (rect == null || fov == null) {
+          objectsToDraw.add(obj);
+          continue;
+        }
+        if (Rectangle.intersect(fov, rect)) {
+          objectsToDraw.add(obj);
+        } else {
+          if (obj instanceof OffScreenListener) {
+            ((OffScreenListener) obj).onOffScreen();
+          }
+        }
+      } else if (obj instanceof OffScreenListener) {
+        Rectangle rect = ((OffScreenListener) obj).getRectangle();
+        if (rect == null || fov == null)
+          continue;
+        if (Rectangle.intersect(fov, rect))
+          continue;
+        ((OffScreenListener) obj).onOffScreen();
       }
-      if (i == layers.length)
-        continue;
-      Rectangle rect = ((Drawable) obj).getRectangle();
-      if (rect == null || fov == null) {
-        objectsToDraw.add(obj);
-        continue;
-      }
-      if (Rectangle.intersect(fov, rect))
-        objectsToDraw.add(obj);
     }
     return objectsToDraw;
   }

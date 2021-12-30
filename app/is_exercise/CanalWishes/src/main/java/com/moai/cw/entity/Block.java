@@ -22,6 +22,6 @@ public class Block extends Entity {
 
   @Override
   public int getLayer() {
-    return 0;
+    return Constants.LAYER_BACKGROUND;
   }
 }

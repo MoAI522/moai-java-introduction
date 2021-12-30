@@ -28,6 +28,7 @@ public class App extends Thread {
     int targetFPS = Constants.TARGET_FPS;
     int fpsCount = 0;
     double fps = 0;
+    int dt = (int) Math.floor(1000 / targetFPS);
     while (true) {
       long time = System.currentTimeMillis();
       previousTime = time;
@@ -47,7 +48,7 @@ public class App extends Thread {
       }
 
       keyInputManager.update();
-      currentScene.update((int) Math.floor(1000 / targetFPS));
+      currentScene.update(dt);
 
       graphics.draw(currentScene.draw(), debugInfo);
     }

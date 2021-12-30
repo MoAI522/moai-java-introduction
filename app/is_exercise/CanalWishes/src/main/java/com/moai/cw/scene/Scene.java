@@ -2,22 +2,28 @@ package com.moai.cw.scene;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import com.moai.cw.App;
 import com.moai.cw.game_object.Camera;
-import com.moai.cw.game_object.Drawable;
 import com.moai.cw.game_object.GameObject;
+import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.util.GraphicObject;
 
 public abstract class Scene {
   protected App app;
-  private HashMap<Integer, GameObject> gameObjects;
+  private HashMap<Integer, GameObject> gameObjects, gameObjectsToAdd;
+  private ArrayList<Integer> keysToDelete;
   private int objectKeyCount;
   private ArrayList<Camera> cameras;
 
   public Scene(App app) {
     this.app = app;
     gameObjects = new HashMap<Integer, GameObject>();
+    gameObjectsToAdd = new HashMap<Integer, GameObject>();
+    keysToDelete = new ArrayList<Integer>();
     objectKeyCount = 0;
     cameras = new ArrayList<Camera>();
   }
@@ -26,6 +32,15 @@ public abstract class Scene {
     for (int key : gameObjects.keySet()) {
       gameObjects.get(key).update(dt);
     }
+
+    for (int key : gameObjectsToAdd.keySet()) {
+      gameObjects.put(key, gameObjectsToAdd.get(key));
+    }
+    for (int key : keysToDelete) {
+      gameObjects.remove(key);
+    }
+    gameObjectsToAdd.clear();
+    keysToDelete.clear();
   }
 
   public final ArrayList<GraphicObject> draw() {
@@ -41,13 +56,13 @@ public abstract class Scene {
   }
 
   public final int addGameObject(GameObject gameObject) {
-    gameObjects.put(objectKeyCount, gameObject);
+    gameObjectsToAdd.put(objectKeyCount, gameObject);
     objectKeyCount++;
     return objectKeyCount - 1;
   }
 
   public final void removeGameObject(int key) {
-    gameObjects.remove(key);
+    keysToDelete.add(key);
   }
 
   protected final void addCamera(Camera camera) {

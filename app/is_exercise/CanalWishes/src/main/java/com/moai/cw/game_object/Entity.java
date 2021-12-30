@@ -1,5 +1,6 @@
 package com.moai.cw.game_object;
 
+import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.CVector2;
 import com.moai.cw.util.DVector2;
@@ -35,8 +36,8 @@ public abstract class Entity extends GameObject implements Drawable {
   }
 
   public final boolean isVisible() {
-    if (parent != null && parent instanceof Drawable)
-      return ((Drawable) parent).isVisible() && visible;
+    if (getParent() != null && getParent() instanceof Drawable)
+      return ((Drawable) getParent()).isVisible() && visible;
     return visible;
   }
 
@@ -45,7 +46,7 @@ public abstract class Entity extends GameObject implements Drawable {
   }
 
   public final Rectangle getRectangle() {
-    if (parent != null) {
+    if (getParent() != null) {
 
       DVector2 absPos = getPosition();
       return new Rectangle(absPos.x, absPos.y, textureSize.x * scale.x, textureSize.y * scale.y);

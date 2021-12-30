@@ -6,10 +6,10 @@ import com.moai.cw.scene.Scene;
 import com.moai.cw.util.DVector2;
 
 public abstract class GameObject {
-  protected Scene scene;
+  private Scene scene;
   private int objectKey;
-  protected GameObject parent;
-  protected ArrayList<GameObject> children;
+  private GameObject parent;
+  private ArrayList<GameObject> children;
   private DVector2 position;
 
   public GameObject(Scene scene, DVector2 position) {
@@ -45,5 +45,13 @@ public abstract class GameObject {
     if (parent != null)
       return parent.getPosition().add(position);
     return position;
+  }
+
+  protected Scene getScene() {
+    return scene;
+  }
+
+  protected GameObject getParent() {
+    return parent;
   }
 }

@@ -1,8 +1,8 @@
 package com.moai.cw.ui;
 
 import com.moai.cw.Constants;
-import com.moai.cw.game_object.Drawable;
 import com.moai.cw.game_object.GameObject;
+import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.Color;
 import com.moai.cw.util.DVector2;
@@ -46,6 +46,6 @@ public class UI extends GameObject implements Drawable {
 
   @Override
   public int getLayer() {
-    return 10;
+    return Constants.LAYER_UI_BACKGROUND;
   }
 }

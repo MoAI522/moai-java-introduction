@@ -41,8 +41,8 @@ public abstract class Rigitbody extends Entity {
       Rectangle rect = new Rectangle(getPosition().x + dp.x, getPosition().y,
           getSize().x, getSize().y);
       double r = 1;
-      for (int i : scene.getGameObjects().keySet()) {
-        GameObject gameObject = scene.getGameObjects().get(i);
+      for (int i : getScene().getGameObjects().keySet()) {
+        GameObject gameObject = getScene().getGameObjects().get(i);
         if (!(gameObject instanceof Block))
           continue;
         Block block = (Block) gameObject;
@@ -69,8 +69,8 @@ public abstract class Rigitbody extends Entity {
     {
       Rectangle rect = new Rectangle(getPosition().x + dp.x, getPosition().y + dp.y, getSize().x, getSize().y);
       double r = 1;
-      for (int i : scene.getGameObjects().keySet()) {
-        GameObject gameObject = scene.getGameObjects().get(i);
+      for (int i : getScene().getGameObjects().keySet()) {
+        GameObject gameObject = getScene().getGameObjects().get(i);
         if (!(gameObject instanceof Block))
           continue;
         Block block = (Block) gameObject;

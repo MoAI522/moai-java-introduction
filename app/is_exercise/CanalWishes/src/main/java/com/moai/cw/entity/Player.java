@@ -2,6 +2,7 @@ package com.moai.cw.entity;
 
 import java.util.HashMap;
 
+import com.moai.cw.Constants;
 import com.moai.cw.KeyInputManager.KeyCode;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.CVector2;
@@ -72,7 +73,7 @@ public class Player extends Rigitbody {
             / HORIZONTAL_VELOCITY_CHANGE_DURATION);
     setVelocity(velocity);
 
-    if (scene.getApp().getKeyInputManager().getState(KeyCode.SPACE) == 1) {
+    if (getScene().getApp().getKeyInputManager().getState(KeyCode.SPACE) == 1) {
       if (isAirborne()) {
         if (counter.get(FrameCounter.KEY.LAST_HOVER) > HOVER_COOLTIME) {
           addForce(new DVector2(0, -HOVER_FORCE));
@@ -87,7 +88,7 @@ public class Player extends Rigitbody {
       }
     }
 
-    if (scene.getApp().getKeyInputManager().getState(KeyCode.B) == 1) {
+    if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == 1) {
       if (isAirborne()) {
         if (state == State.HOVER) {
           stopHovering();
@@ -97,20 +98,20 @@ public class Player extends Rigitbody {
     }
 
     physics(dt);
-    scene.getApp().setDebugInfo("player-pos", getPosition().toString());
-    scene.getApp().setDebugInfo("player-state", state.toString());
+    getScene().getApp().setDebugInfo("player-pos", getPosition().toString());
+    getScene().getApp().setDebugInfo("player-state", state.toString());
   }
 
   private void handleHorizontalMove() {
     int direction = 0;
     int inputCount = 0;
-    if (scene.getApp().getKeyInputManager().getState(KeyCode.A) > 0) {
+    if (getScene().getApp().getKeyInputManager().getState(KeyCode.A) > 0) {
       direction -= 1;
-      inputCount = scene.getApp().getKeyInputManager().getState(KeyCode.A);
+      inputCount = getScene().getApp().getKeyInputManager().getState(KeyCode.A);
     }
-    if (scene.getApp().getKeyInputManager().getState(KeyCode.D) > 0) {
+    if (getScene().getApp().getKeyInputManager().getState(KeyCode.D) > 0) {
       direction += 1;
-      inputCount = scene.getApp().getKeyInputManager().getState(KeyCode.D);
+      inputCount = getScene().getApp().getKeyInputManager().getState(KeyCode.D);
     }
     if (direction == 0) {
       if (counter.get(FrameCounter.KEY.LAST_WALK) > WALK_TO_SPRINT) {
@@ -201,6 +202,6 @@ public class Player extends Rigitbody {
 
   @Override
   public int getLayer() {
-    return 5;
+    return Constants.LAYER_PLAYER;
   }
 }

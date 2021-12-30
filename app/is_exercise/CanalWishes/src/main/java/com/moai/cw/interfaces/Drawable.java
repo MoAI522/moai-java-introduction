@@ -1,4 +1,4 @@
-package com.moai.cw.game_object;
+package com.moai.cw.interfaces;
 
 import com.moai.cw.util.DVector2;
 import com.moai.cw.util.GraphicObject;
