@@ -7,21 +7,22 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import com.moai.cw.Constants;
+import com.moai.cw.entity.Block;
 import com.moai.cw.scene.Scene;
-import com.moai.cw.util.DPosition;
+import com.moai.cw.util.DVector2;
 
 public class Stage extends GameObject {
   private char[][] mapData;
 
   public Stage(Scene scene, String mapFilename) {
-    super(scene, null);
+    super(scene, new DVector2(0, 0));
     load(mapFilename);
     for (int i = 0; i < mapData.length; i++) {
       for (int j = 0; j < mapData[i].length; j++) {
         if (mapData[i][j] == 0)
           continue;
         scene.addGameObject(new Block(scene, this,
-            new DPosition(j * Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), mapData[i][j] - 1));
+            new DVector2(j * Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), mapData[i][j] - 1));
       }
     }
   }

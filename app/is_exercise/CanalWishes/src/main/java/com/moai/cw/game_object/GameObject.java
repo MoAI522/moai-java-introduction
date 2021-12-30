@@ -3,23 +3,23 @@ package com.moai.cw.game_object;
 import java.util.ArrayList;
 
 import com.moai.cw.scene.Scene;
-import com.moai.cw.util.DPosition;
+import com.moai.cw.util.DVector2;
 
 public abstract class GameObject {
   protected Scene scene;
   private int objectKey;
   protected GameObject parent;
   protected ArrayList<GameObject> children;
-  protected DPosition position;
+  private DVector2 position;
 
-  public GameObject(Scene scene, DPosition position) {
+  public GameObject(Scene scene, DVector2 position) {
     this.scene = scene;
     objectKey = scene.addGameObject(this);
     this.position = position;
     this.children = new ArrayList<GameObject>();
   }
 
-  public GameObject(Scene scene, GameObject parent, DPosition position) {
+  public GameObject(Scene scene, GameObject parent, DVector2 position) {
     this(scene, position);
     this.parent = parent;
   }
@@ -37,11 +37,11 @@ public abstract class GameObject {
     children.add(child);
   }
 
-  public final void setPosition(DPosition position) {
+  public final void setPosition(DVector2 position) {
     this.position = position;
   }
 
-  public final DPosition getPosition() {
+  public final DVector2 getPosition() {
     if (parent != null)
       return parent.getPosition().add(position);
     return position;

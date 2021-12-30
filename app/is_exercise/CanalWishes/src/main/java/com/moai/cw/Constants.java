@@ -9,4 +9,5 @@ public class Constants {
   public static final int MAPCHIP_SIZE = 24;
   public static final int MAPCHIP_COLUMN = 10;
   public static final int TARGET_FPS = 30;
+  public static final double G = 2;
 }

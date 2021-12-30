@@ -1,6 +1,7 @@
 package com.moai.cw.graphic_fx;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.moai.cw.App;
 import com.moai.cw.Constants;
@@ -49,7 +50,7 @@ public class FXMain extends Application {
     launch(args);
   }
 
-  public void draw(ArrayList<GraphicObject> objects, double fps) {
+  public void draw(ArrayList<GraphicObject> objects, HashMap<String, String> debugInfo) {
     if (drawer == null || gc == null)
       return;
     WritableImage buf = new WritableImage(Constants.DISPLAY_WIDTH * Constants.PIXEL_RATIO,
@@ -61,8 +62,15 @@ public class FXMain extends Application {
     gc.fillRect(0, 0, Constants.DISPLAY_WIDTH * Constants.PIXEL_RATIO,
         Constants.DISPLAY_HEIGHT * Constants.PIXEL_RATIO);
     gc.drawImage(buf, 0, 0);
+
+    String debugStr = "";
+    for (String key : debugInfo.keySet()) {
+      debugStr = debugStr + key + ": " + debugInfo.get(key) + "\n";
+    }
+    gc.setFill(new Color(0, 0, 0, 0.3));
+    gc.fillRect(0, 0, 150, 20 * debugInfo.size());
     gc.setFill(Color.WHITE);
-    gc.fillText("FPS: " + fps, 5, 20);
+    gc.fillText(debugStr, 10, 20);
   }
 
   private static void onKeyPressed(KeyEvent e, App app) {

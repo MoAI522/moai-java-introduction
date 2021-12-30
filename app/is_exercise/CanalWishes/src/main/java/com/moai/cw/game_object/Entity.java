@@ -1,19 +1,19 @@
 package com.moai.cw.game_object;
 
 import com.moai.cw.scene.Scene;
-import com.moai.cw.util.CPosition;
-import com.moai.cw.util.DPosition;
+import com.moai.cw.util.CVector2;
+import com.moai.cw.util.DVector2;
 import com.moai.cw.util.GraphicObject;
 import com.moai.cw.util.Rectangle;
 
 public abstract class Entity extends GameObject implements Drawable {
-  private DPosition scale;
+  private DVector2 scale;
   private char textureIndex;
-  private CPosition textureCoordinate, textureSize;
+  private CVector2 textureCoordinate, textureSize;
   private boolean visible;
 
-  public Entity(Scene scene, GameObject parent, DPosition position, DPosition scale, CPosition textureCoordinate,
-      CPosition textureSize, int textureIndex) {
+  public Entity(Scene scene, GameObject parent, DVector2 position, DVector2 scale, CVector2 textureCoordinate,
+      CVector2 textureSize, int textureIndex) {
     super(scene, parent, position);
     this.scale = scale;
     this.textureCoordinate = textureCoordinate;
@@ -23,10 +23,10 @@ public abstract class Entity extends GameObject implements Drawable {
 
   @Override
   public final GraphicObject draw() {
-    return new GraphicObject(position, scale, textureIndex, textureCoordinate, textureSize);
+    return new GraphicObject(getPosition(), scale, textureIndex, textureCoordinate, textureSize);
   };
 
-  protected final void setScale(DPosition scale) {
+  protected final void setScale(DVector2 scale) {
     this.scale = scale;
   }
 
@@ -40,11 +40,16 @@ public abstract class Entity extends GameObject implements Drawable {
     return visible;
   }
 
+  public final DVector2 getSize() {
+    return new DVector2(textureSize.x * scale.x, textureSize.y * scale.y);
+  }
+
   public final Rectangle getRectangle() {
     if (parent != null) {
-      DPosition absPos = getPosition();
+
+      DVector2 absPos = getPosition();
       return new Rectangle(absPos.x, absPos.y, textureSize.x * scale.x, textureSize.y * scale.y);
     }
-    return new Rectangle(position.x, position.y, textureSize.x * scale.x, textureSize.y * scale.y);
+    return new Rectangle(getPosition().x, getPosition().y, textureSize.x * scale.x, textureSize.y * scale.y);
   }
 }

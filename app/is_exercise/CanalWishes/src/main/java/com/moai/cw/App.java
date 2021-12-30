@@ -1,5 +1,7 @@
 package com.moai.cw;
 
+import java.util.HashMap;
+
 import com.moai.cw.graphic_fx.FXMain;
 import com.moai.cw.scene.FieldScene;
 import com.moai.cw.scene.Scene;
@@ -9,10 +11,12 @@ public class App extends Thread {
 
   private Scene currentScene;
   private KeyInputManager keyInputManager;
+  private HashMap<String, String> debugInfo;
 
   public App(FXMain graphics) {
     this.graphics = graphics;
     keyInputManager = new KeyInputManager();
+    debugInfo = new HashMap<String, String>();
     this.start();
   }
 
@@ -40,17 +44,22 @@ public class App extends Thread {
         fps = 1000 / ave;
         fpsCount = 0;
         prevCalcFPSTime = time;
+        setDebugInfo("fps", Double.toString(fps));
       }
 
       keyInputManager.update();
       currentScene.update(dt);
 
-      graphics.draw(currentScene.draw(), fps);
+      graphics.draw(currentScene.draw(), debugInfo);
     }
   }
 
   public KeyInputManager getKeyInputManager() {
     return keyInputManager;
+  }
+
+  public void setDebugInfo(String key, String value) {
+    debugInfo.put(key, value);
   }
 
   public static void main(String[] args) {

@@ -4,17 +4,15 @@ import com.moai.cw.App;
 import com.moai.cw.entity.Player;
 import com.moai.cw.game_object.Camera;
 import com.moai.cw.game_object.Stage;
-import com.moai.cw.util.DPosition;
+import com.moai.cw.util.DVector2;
 
 public class FieldScene extends Scene {
   public FieldScene(App app) {
     super(app);
     Camera camera = new Camera(this);
-    addGameObject(camera);
     addCamera(camera);
 
-    addGameObject(new Stage(this, "map/0.csv"));
-
-    addGameObject(new Player(this, new DPosition(10, 10)));
+    new Stage(this, "map/0.csv");
+    new Player(this, new DVector2(100, 10));
   }
 }
