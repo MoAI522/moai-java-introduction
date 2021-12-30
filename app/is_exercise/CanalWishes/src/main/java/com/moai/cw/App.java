@@ -30,7 +30,6 @@ public class App extends Thread {
     double fps = 0;
     while (true) {
       long time = System.currentTimeMillis();
-      int dt = (int) (time - previousTime);
       previousTime = time;
       try {
         int sleepTime = (int) Math.max((double) 1000 / targetFPS * fpsCount - (time - prevCalcFPSTime), 0);
@@ -39,7 +38,7 @@ public class App extends Thread {
       }
       fpsCount++;
       if (fpsCount == 16) {
-        long sum = prevCalcFPSTime - time;
+        long sum = time - prevCalcFPSTime;
         int ave = (int) (sum / 16);
         fps = 1000 / ave;
         fpsCount = 0;
@@ -48,7 +47,7 @@ public class App extends Thread {
       }
 
       keyInputManager.update();
-      currentScene.update(dt);
+      currentScene.update((int) Math.floor(1000 / targetFPS));
 
       graphics.draw(currentScene.draw(), debugInfo);
     }

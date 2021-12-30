@@ -9,7 +9,7 @@ import com.moai.cw.util.DVector2;
 
 public class Player extends Rigitbody {
   private static double JUMP_FORCE = 0.3;
-  private static double HOVER_FORCE = 0.4;
+  private static double HOVER_FORCE = 0.3;
   private static double DEFAULT_DRAG = 1.05;
   private static double HOVER_DRAG = 1.3;
   private static double MASS = 1;
@@ -43,16 +43,27 @@ public class Player extends Rigitbody {
 
     DVector2 velocity = getVelocity();
 
-    if (state == State.HOVER && !isAirborne()) {
-      stopHovering();
-    }
-
-    if (velocity.y > 0) {
-      if (state != State.HOVER) {
-        state = State.FALL;
+    if (isAirborne()) {
+      switch (state) {
+        case WALK:
+        case SPRINT:
+          state = State.JUMP;
+          break;
+        case JUMP:
+          if (velocity.y > 0) {
+            state = State.FALL;
+          }
+          break;
+        default:
       }
-    } else if (velocity.y == 0) {
-
+    } else {
+      switch (state) {
+        case HOVER:
+          stopHovering();
+          state = State.STOP;
+          break;
+        default:
+      }
     }
 
     handleHorizontalMove();
@@ -78,7 +89,10 @@ public class Player extends Rigitbody {
 
     if (scene.getApp().getKeyInputManager().getState(KeyCode.B) == 1) {
       if (isAirborne()) {
-        stopHovering();
+        if (state == State.HOVER) {
+          stopHovering();
+          state = State.JUMP;
+        }
       }
     }
 
@@ -100,7 +114,9 @@ public class Player extends Rigitbody {
     }
     if (direction == 0) {
       if (counter.get(FrameCounter.KEY.LAST_WALK) > WALK_TO_SPRINT) {
-        state = State.STOP;
+        if (!isAirborne()) {
+          state = State.STOP;
+        }
         changeSpeed(0, false);
       }
       return;
@@ -117,7 +133,6 @@ public class Player extends Rigitbody {
       case WALK:
         if (inputCount == 1 && leftward == (direction == -1)) {
           changeSpeed(direction * SPRINT_SPEED, false);
-          System.out.println(previousHorizontalVelocity + " " + targetHorizontalVelocity);
           state = State.SPRINT;
         } else {
           changeSpeed(direction * WALK_SPEED, false);
@@ -151,7 +166,6 @@ public class Player extends Rigitbody {
 
   private void stopHovering() {
     setDrag(DEFAULT_DRAG);
-    state = State.STOP;
   }
 
   private static class FrameCounter {
@@ -183,5 +197,10 @@ public class Player extends Rigitbody {
     public int get(KEY key) {
       return counts.get(key);
     }
+  }
+
+  @Override
+  public int getLayer() {
+    return 5;
   }
 }

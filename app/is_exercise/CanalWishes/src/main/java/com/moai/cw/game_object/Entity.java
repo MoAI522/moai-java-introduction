@@ -22,8 +22,8 @@ public abstract class Entity extends GameObject implements Drawable {
   }
 
   @Override
-  public final GraphicObject draw() {
-    return new GraphicObject(getPosition(), scale, textureIndex, textureCoordinate, textureSize);
+  public final GraphicObject draw(DVector2 offset) {
+    return new GraphicObject(getPosition().add(offset), scale, textureIndex, textureCoordinate, textureSize);
   };
 
   protected final void setScale(DVector2 scale) {

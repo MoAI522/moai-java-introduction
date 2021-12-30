@@ -19,4 +19,9 @@ public class Block extends Entity {
   public void update(int dt) {
 
   }
+
+  @Override
+  public int getLayer() {
+    return 0;
+  }
 }

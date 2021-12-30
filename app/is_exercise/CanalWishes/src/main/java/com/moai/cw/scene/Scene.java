@@ -30,11 +30,12 @@ public abstract class Scene {
 
   public final ArrayList<GraphicObject> draw() {
     ArrayList<GraphicObject> graphicObjects = new ArrayList<GraphicObject>();
-    for (int key : gameObjects.keySet()) {
-      GameObject obj = gameObjects.get(key);
-      if (!(obj instanceof Drawable))
-        continue;
-      graphicObjects.add(((Drawable) obj).draw());
+    for (Camera camera : cameras) {
+      for (GameObject obj : camera.culling()) {
+        if (!(obj instanceof Drawable))
+          continue;
+        graphicObjects.add(((Drawable) obj).draw(camera.getPosition().negate()));
+      }
     }
     return graphicObjects;
   }

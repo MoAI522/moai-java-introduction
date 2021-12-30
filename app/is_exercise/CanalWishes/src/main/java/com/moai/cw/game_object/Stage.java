@@ -1,18 +1,17 @@
 package com.moai.cw.game_object;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.io.Reader;
 
 import com.moai.cw.Constants;
 import com.moai.cw.entity.Block;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.DVector2;
+import com.moai.cw.util.IVector2;
 
 public class Stage extends GameObject {
   private char[][] mapData;
+  private IVector2 mapSize;
 
   public Stage(Scene scene, String mapFilename) {
     super(scene, new DVector2(0, 0));
@@ -24,6 +23,14 @@ public class Stage extends GameObject {
         scene.addGameObject(new Block(scene, this,
             new DVector2(j * Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), mapData[i][j] - 1));
       }
+    }
+    for (int i = 0; i < mapSize.x; i++) {
+      scene.addGameObject(new Block(scene, this, new DVector2(i * Constants.MAPCHIP_SIZE, -Constants.MAPCHIP_SIZE), 0));
+    }
+    for (int i = 0; i < mapSize.y; i++) {
+      scene.addGameObject(new Block(scene, this, new DVector2(-Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), 0));
+      scene.addGameObject(
+          new Block(scene, this, new DVector2(mapSize.x * Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), 0));
     }
   }
 
@@ -45,6 +52,7 @@ public class Stage extends GameObject {
           mapData[i][j] = (char) Integer.parseInt(cells[j]);
         }
       }
+      mapSize = new IVector2(w, h);
       br.close();
     } catch (Exception e) {
       System.out.println(e.toString());
@@ -54,5 +62,9 @@ public class Stage extends GameObject {
   @Override
   public void update(int dt) {
     return;
+  }
+
+  public DVector2 getMapSize() {
+    return new DVector2(mapSize.x * Constants.MAPCHIP_SIZE, mapSize.y * Constants.MAPCHIP_SIZE);
   }
 }
