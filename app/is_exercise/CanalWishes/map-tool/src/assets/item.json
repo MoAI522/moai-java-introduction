@@ -1,0 +1,12 @@
+[
+  {
+    "class": "com.moai.cw.item.Item1",
+    "texture_src": "resources/textures/0.png",
+    "coordinate": [0, 72, 12, 12]
+  },
+  {
+    "class": "com.moai.cw.item.Item2",
+    "texture_src": "resources/textures/0.png",
+    "coordinate": [24, 72, 12, 12]
+  }
+]

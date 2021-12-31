@@ -1,0 +1,19 @@
+[
+  {
+    "class": "com.moai.cw.enemy.Enemy1",
+    "texture_src": "resources/textures/0.png",
+    "coordinates": [
+      [0, 0, 24, 24],
+      [24, 0, 24, 24],
+      [48, 0, 24, 24]
+    ]
+  },
+  {
+    "class": "com.moai.cw.enemy.Enemy2",
+    "texture_src": "resources/textures/0.png",
+    "coordinates": [
+      [0, 24, 24, 48],
+      [24, 24, 24, 48]
+    ]
+  }
+]

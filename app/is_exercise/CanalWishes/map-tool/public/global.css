@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #eeeeee;
+  /* overflow: hidden; */
+}
+
+body {
+  margin: 0;
+}
