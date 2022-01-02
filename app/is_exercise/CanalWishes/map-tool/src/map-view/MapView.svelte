@@ -133,7 +133,15 @@
           h: data.coordinates[enemy.type][3] * 2,
           active: enemy.id == _focused_enemy,
         },
-        onClick: () => {
+        onClick: (e: MouseEvent) => {
+          if ($command !== "ENEMY" && $command !== "LIST") return;
+          $focused_item = null;
+          if (e.ctrlKey) {
+            $enemies = $enemies.filter((v) => v.id !== enemy.id);
+            $focused_enemy = null;
+            return;
+          }
+
           if ($focused_enemy == enemy.id) return;
           $focused_enemy = enemy.id;
         },
@@ -170,9 +178,16 @@
           h: data.coordinate[3] * 2,
           active: item.id == _focused_item,
         },
-        onClick: () => {
-          if ($focused_enemy == item.id) return;
-          $focused_enemy = item.id;
+        onClick: (e: MouseEvent) => {
+          if ($command !== "ITEM" && $command !== "LIST") return;
+          $focused_enemy = null;
+          if (e.ctrlKey) {
+            $items = $items.filter((v) => v.id !== item.id);
+            $focused_item = null;
+            return;
+          }
+          if ($focused_item == item.id) return;
+          $focused_item = item.id;
         },
       };
     });

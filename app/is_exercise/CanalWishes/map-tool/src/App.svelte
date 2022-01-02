@@ -1,6 +1,7 @@
 <script lang="ts">
   import CommandList from "./command-list/CommandList.svelte";
   import CommandSettings from "./command-settings/CommandSettings.svelte";
+  import Inspector from "./inspector/Inspector.svelte";
   import MapView from "./map-view/MapView.svelte";
 </script>
 
@@ -14,7 +15,7 @@
       <div class="command-settings-wrapper wrapper"><CommandSettings /></div>
     </div>
   </div>
-  <div class="inspector-wrapper wrapper">inspector</div>
+  <div class="inspector-wrapper wrapper"><Inspector /></div>
 </div>
 
 <style>
