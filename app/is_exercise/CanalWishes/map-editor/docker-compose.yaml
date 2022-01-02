@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    build: .
+    container_name: "cw-map-editor"
+    working_dir: "/app/"
+    tty: true
+    volumes:
+      - ./app:/app/
+      - ../src/main/resources/map:/dist/
+    ports:
+      - 8080:8080
