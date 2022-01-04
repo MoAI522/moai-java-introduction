@@ -1,7 +1,6 @@
 package com.moai.cw.entity;
 
 import com.moai.cw.Constants;
-import com.moai.cw.game_object.Entity;
 import com.moai.cw.game_object.GameObject;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.CVector2;

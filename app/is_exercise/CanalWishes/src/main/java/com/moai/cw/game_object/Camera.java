@@ -3,6 +3,7 @@ package com.moai.cw.game_object;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.moai.cw.entity.Entity;
 import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.interfaces.OffScreenListener;
 import com.moai.cw.scene.Scene;
@@ -56,7 +57,10 @@ public class Camera extends GameObject {
 
   public ArrayList<GameObject> culling() {
     HashMap<Integer, GameObject> gameObjects = getScene().getGameObjects();
-    ArrayList<GameObject> objectsToDraw = new ArrayList<GameObject>();
+    ArrayList<ArrayList<GameObject>> objectsToDraw = new ArrayList<ArrayList<GameObject>>();
+    for (int i = 0; i < layers.length; i++) {
+      objectsToDraw.add(new ArrayList<GameObject>());
+    }
     for (int key : gameObjects.keySet()) {
       GameObject obj = gameObjects.get(key);
       if (obj instanceof Drawable) {
@@ -69,11 +73,11 @@ public class Camera extends GameObject {
           continue;
         Rectangle rect = ((Drawable) obj).getRectangle();
         if (rect == null || fov == null) {
-          objectsToDraw.add(obj);
+          objectsToDraw.get(i).add(obj);
           continue;
         }
         if (Rectangle.intersect(fov, rect)) {
-          objectsToDraw.add(obj);
+          objectsToDraw.get(i).add(obj);
         } else {
           if (obj instanceof OffScreenListener) {
             ((OffScreenListener) obj).onOffScreen();
@@ -88,6 +92,14 @@ public class Camera extends GameObject {
         ((OffScreenListener) obj).onOffScreen();
       }
     }
-    return objectsToDraw;
+
+    ArrayList<GameObject> result = new ArrayList<GameObject>();
+    for (ArrayList<GameObject> layer : objectsToDraw) {
+      for (GameObject object : layer) {
+        result.add(object);
+      }
+    }
+
+    return result;
   }
 }

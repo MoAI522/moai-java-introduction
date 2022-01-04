@@ -4,9 +4,11 @@ import java.util.HashMap;
 
 import com.moai.cw.Constants;
 import com.moai.cw.KeyInputManager.KeyCode;
+import com.moai.cw.fireball.Bress;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.util.CVector2;
 import com.moai.cw.util.DVector2;
+import com.moai.cw.util.Direction.DIRECTION;
 
 public class Player extends Rigitbody {
   private static double JUMP_FORCE = 0.3;
@@ -17,8 +19,8 @@ public class Player extends Rigitbody {
   private static double WALK_SPEED = 3;
   private static double SPRINT_SPEED = 8;
   private static int HOVER_COOLTIME = 5;
-  private static int WALK_TO_SPRINT = 5;
-  private static int HORIZONTAL_VELOCITY_CHANGE_DURATION = 5;
+  private static int WALK_TO_SPRINT = 3;
+  private static int HORIZONTAL_VELOCITY_CHANGE_DURATION = 3;
 
   private enum State {
     STOP, WALK, SPRINT, JUMP, FALL, HOVER
@@ -26,14 +28,14 @@ public class Player extends Rigitbody {
 
   private State state;
   private FrameCounter counter;
-  private boolean leftward;
+  private int direction;
   private double previousHorizontalVelocity, targetHorizontalVelocity;
 
   public Player(Scene scene, DVector2 position) {
     super(scene, null, position, new DVector2(1, 1), new CVector2(0, 0), new CVector2(24, 24), 1, MASS, DEFAULT_DRAG);
     state = State.STOP;
     counter = new FrameCounter();
-    leftward = false;
+    direction = 1;
     previousHorizontalVelocity = 0;
     targetHorizontalVelocity = 0;
   }
@@ -132,7 +134,7 @@ public class Player extends Rigitbody {
         }
         break;
       case WALK:
-        if (inputCount == 1 && leftward == (direction == -1)) {
+        if (inputCount == 1 && this.direction == direction) {
           changeSpeed(direction * SPRINT_SPEED, false);
           state = State.SPRINT;
         } else {
@@ -147,9 +149,12 @@ public class Player extends Rigitbody {
       case HOVER:
       case FALL:
         changeSpeed(direction * WALK_SPEED, true);
+        if (!isAirborne()) {
+          state = State.WALK;
+        }
         break;
     }
-    leftward = (direction == -1);
+    this.direction = direction;
   }
 
   private void changeSpeed(double v, boolean eventually) {
@@ -167,6 +172,9 @@ public class Player extends Rigitbody {
 
   private void stopHovering() {
     setDrag(DEFAULT_DRAG);
+    new Bress(getScene(),
+        getPosition().add(new DVector2(direction == -1 ? -Bress.SIZE : getSize().x, getSize().y / 2 - Bress.SIZE / 2)),
+        direction == -1 ? DIRECTION.LEFT : DIRECTION.RIGHT);
   }
 
   private static class FrameCounter {

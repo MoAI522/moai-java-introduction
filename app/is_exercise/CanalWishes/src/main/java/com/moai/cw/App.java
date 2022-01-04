@@ -5,6 +5,7 @@ import java.util.HashMap;
 import com.moai.cw.graphic_fx.FXMain;
 import com.moai.cw.scene.FieldScene;
 import com.moai.cw.scene.Scene;
+import com.moai.cw.scene.TitleScene;
 
 public class App extends Thread {
   private FXMain graphics;
@@ -21,7 +22,7 @@ public class App extends Thread {
   }
 
   public void run() {
-    currentScene = new FieldScene(this);
+    currentScene = new TitleScene(this);
 
     long previousTime = System.currentTimeMillis() - 10;
     long prevCalcFPSTime = previousTime;
@@ -52,6 +53,10 @@ public class App extends Thread {
 
       graphics.draw(currentScene.draw(), debugInfo);
     }
+  }
+
+  public void setScene(Scene scene) {
+    currentScene = scene;
   }
 
   public KeyInputManager getKeyInputManager() {

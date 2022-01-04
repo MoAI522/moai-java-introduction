@@ -11,6 +11,8 @@ public class MapData {
   private List<List<Integer>> tiles;
   @JsonProperty("enemies")
   private List<EnemyData> enemies;
+  @JsonProperty("items")
+  private List<Integer> items;
 
   public List<Integer> getMapSize() {
     return mapSize;

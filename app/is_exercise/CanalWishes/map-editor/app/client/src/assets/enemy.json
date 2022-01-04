@@ -1,6 +1,6 @@
 [
   {
-    "class": "com.moai.cw.enemy.Enemy1",
+    "class": "com.moai.cw.enemy.Newbie",
     "texture_src": "resources/textures/0.png",
     "coordinates": [
       [0, 0, 24, 24],
@@ -9,7 +9,7 @@
     ]
   },
   {
-    "class": "com.moai.cw.enemy.Enemy2",
+    "class": "com.moai.cw.enemy.Fish",
     "texture_src": "resources/textures/0.png",
     "coordinates": [
       [0, 24, 24, 48],

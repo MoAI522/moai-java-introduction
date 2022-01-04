@@ -1,7 +1,7 @@
 version: '3'
 services:
   app:
-    build: .
+    build: ./app
     container_name: "cw-map-editor"
     working_dir: "/app/"
     tty: true
@@ -12,9 +12,9 @@ services:
       - 8080:8080
     command: "python3 src/app.py"
   client:
-    image: node:16
+    build: ./app/client
     container_name: "cw-map-editor-client"
     working_dir: "/client/"
     volumes:
       - ./app/client:/client/
-    command: "yarn dev"
+    command: "/bin/bash -c 'yarn install --frozen-lockfile && yarn dev'"

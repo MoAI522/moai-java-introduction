@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EnemyData {
   @JsonProperty("id")
-  private int id;
+  private String id;
   @JsonProperty("class")
   private String className;
   @JsonProperty("type")
@@ -15,6 +15,8 @@ public class EnemyData {
   private List<Integer> position;
   @JsonProperty("direction")
   private String direction;
+  @JsonProperty("_index")
+  private int _index;
 
   public String getClassName() {
     return className;
