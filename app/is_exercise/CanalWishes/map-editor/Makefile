@@ -1,17 +1,17 @@
 .PHONY: up
 up:
-	docker-compose up -d
-	docker-compose exec app /bin/bash -d -c "cd src/client && yarn dev"
-	docker-compose exec app /bin/bash -c "python3 src/app.py"
+	docker-compose up
 
 .PHONY: build-up
 build-up:
 	docker-compose build
 	make up
 
-.PHONY: exec
+.PHONY: exec-app
 exec:
 	docker-compose exec app /bin/bash
+
+.PHONY: exec-client
 
 .PHONY: down
 down:

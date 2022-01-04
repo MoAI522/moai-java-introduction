@@ -10,3 +10,11 @@ services:
       - ../src/main/resources/map:/dist/
     ports:
       - 8080:8080
+    command: "python3 src/app.py"
+  client:
+    image: node:16
+    container_name: "cw-map-editor-client"
+    working_dir: "/client/"
+    volumes:
+      - ./app/client:/client/
+    command: "yarn dev"
