@@ -3,7 +3,9 @@ package com.moai.cw.game_object;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.moai.cw.Constants;
 import com.moai.cw.entity.Entity;
+import com.moai.cw.interfaces.DebugDrawable;
 import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.interfaces.OffScreenListener;
 import com.moai.cw.scene.Scene;
@@ -64,26 +66,20 @@ public class Camera extends GameObject {
     for (int key : gameObjects.keySet()) {
       GameObject obj = gameObjects.get(key);
       if (obj instanceof Drawable) {
-        int i;
-        for (i = 0; i < layers.length; i++) {
-          if (((Drawable) obj).getLayer() == layers[i])
-            break;
-        }
-        if (i == layers.length)
-          continue;
+        int layer = ((Drawable) obj).getLayer();
         Rectangle rect = ((Drawable) obj).getRectangle();
-        if (rect == null || fov == null) {
+        int i = judge(layer, rect);
+        if (i >= 0)
           objectsToDraw.get(i).add(obj);
-          continue;
-        }
-        if (Rectangle.intersect(fov, rect)) {
+      }
+      if ((Constants.DEBUG && obj instanceof DebugDrawable)) {
+        int layer = Constants.LAYER_DEBUG;
+        Rectangle rect = null;
+        int i = judge(layer, rect);
+        if (i >= 0)
           objectsToDraw.get(i).add(obj);
-        } else {
-          if (obj instanceof OffScreenListener) {
-            ((OffScreenListener) obj).onOffScreen();
-          }
-        }
-      } else if (obj instanceof OffScreenListener) {
+      }
+      if (obj instanceof OffScreenListener) {
         Rectangle rect = ((OffScreenListener) obj).getRectangle();
         if (rect == null || fov == null)
           continue;
@@ -101,5 +97,23 @@ public class Camera extends GameObject {
     }
 
     return result;
+  }
+
+  private int judge(int layer, Rectangle rect) {
+    int i;
+    for (i = 0; i < layers.length; i++) {
+      if (layer == layers[i])
+        break;
+    }
+    if (i == layers.length)
+      return -1;
+
+    if (rect == null || fov == null) {
+      return i;
+    }
+    if (Rectangle.intersect(fov, rect)) {
+      return i;
+    }
+    return -2;
   }
 }

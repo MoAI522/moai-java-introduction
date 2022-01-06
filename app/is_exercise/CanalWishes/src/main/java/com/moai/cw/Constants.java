@@ -1,6 +1,8 @@
 package com.moai.cw;
 
 public class Constants {
+  public static final boolean DEBUG = true;
+
   public static final int DISPLAY_WIDTH = 256;
   public static final int DISPLAY_HEIGHT = 224;
   public static final int PIXEL_RATIO = 2;
@@ -16,4 +18,5 @@ public class Constants {
   public static final int LAYER_PLAYER = 5;
   public static final int LAYER_FIREBALL = 7;
   public static final int LAYER_UI_BACKGROUND = 10;
+  public static final int LAYER_DEBUG = 20;
 }

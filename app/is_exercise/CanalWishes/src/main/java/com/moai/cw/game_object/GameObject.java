@@ -54,4 +54,8 @@ public abstract class GameObject {
   protected GameObject getParent() {
     return parent;
   }
+
+  public String toString() {
+    return "GameObject(" + this.getClass() + ") position: {rel: " + position + " abs: " + getPosition() + "}";
+  }
 }

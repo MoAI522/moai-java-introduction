@@ -20,6 +20,8 @@ public class Fish extends Enemy {
 
   @Override
   public void update(int dt) {
+    if (isVaccumed())
+      return;
     switch (getType()) {
       case 0: {
         if (!isAirborne()) {

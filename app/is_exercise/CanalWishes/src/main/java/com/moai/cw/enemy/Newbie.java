@@ -16,6 +16,8 @@ public class Newbie extends Enemy {
 
   @Override
   public void update(int dt) {
+    if (isVaccumed())
+      return;
     switch (getType()) {
       case 0: {
         setVelocity(new DVector2((direction == DIRECTION.LEFT ? -1 : 1) * WALK_SPEED, getVelocity().y));

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.moai.cw.App;
 import com.moai.cw.game_object.Camera;
 import com.moai.cw.game_object.GameObject;
+import com.moai.cw.interfaces.DebugDrawable;
 import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.util.GraphicObject;
 
@@ -44,9 +45,10 @@ public abstract class Scene {
     ArrayList<GraphicObject> graphicObjects = new ArrayList<GraphicObject>();
     for (Camera camera : cameras) {
       for (GameObject obj : camera.culling()) {
-        if (!(obj instanceof Drawable))
-          continue;
-        graphicObjects.add(((Drawable) obj).draw(camera.getPosition().negate()));
+        if (obj instanceof Drawable)
+          graphicObjects.add(((Drawable) obj).draw(camera.getPosition().negate()));
+        if (obj instanceof DebugDrawable)
+          graphicObjects.add(((DebugDrawable) obj).debugDraw(camera.getPosition().negate()));
       }
     }
     return graphicObjects;
