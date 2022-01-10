@@ -65,14 +65,14 @@ public class Camera extends GameObject {
     }
     for (int key : gameObjects.keySet()) {
       GameObject obj = gameObjects.get(key);
-      if (obj instanceof Drawable) {
+      if (obj instanceof Drawable && ((Drawable) obj).isVisible()) {
         int layer = ((Drawable) obj).getLayer();
         Rectangle rect = ((Drawable) obj).getRectangle();
         int i = judge(layer, rect);
         if (i >= 0)
           objectsToDraw.get(i).add(obj);
       }
-      if ((Constants.DEBUG && obj instanceof DebugDrawable)) {
+      if (Constants.DEBUG && obj instanceof DebugDrawable) {
         int layer = Constants.LAYER_DEBUG;
         Rectangle rect = null;
         int i = judge(layer, rect);

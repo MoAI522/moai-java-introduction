@@ -9,32 +9,36 @@ import com.moai.cw.fireball.Vomit;
 import com.moai.cw.game_object.GameObject;
 import com.moai.cw.game_object.Hitbox;
 import com.moai.cw.interfaces.Hittable;
-import com.moai.cw.scene.Scene;
+import com.moai.cw.scene.FieldScene;
+import com.moai.cw.store.FieldStore;
 import com.moai.cw.util.CVector2;
 import com.moai.cw.util.Color;
 import com.moai.cw.util.DVector2;
 import com.moai.cw.util.Direction.DIRECTION;
 
 public class Player extends Rigitbody implements Hittable {
-  private static double JUMP_FORCE = 0.3;
-  private static double HOVER_FORCE = 0.3;
-  private static double DEFAULT_DRAG = 1.05;
-  private static double HOVER_DRAG = 1.3;
-  private static double MASS = 1;
-  private static double WALK_SPEED = 3;
-  private static double SPRINT_SPEED = 8;
-  private static double EATING_WALK_SPEED = 1.5;
-  private static double SIZE = 24;
-  private static double VACCUME_OFFSET_X = 16;
-  private static double VACCUME_OFFSET_Y = -28;
-  private static double VACCUME_SIZE_X = 80;
-  private static double VACCUME_SIZE_Y = 80;
-  private static int HOVER_COOLTIME = 5;
-  private static int WALK_TO_SPRINT = 3;
-  private static int HORIZONTAL_VELOCITY_CHANGE_DURATION = 3;
+  private static final double JUMP_FORCE = 0.3;
+  private static final double HOVER_FORCE = 0.3;
+  private static final double DEFAULT_DRAG = 1.05;
+  private static final double HOVER_DRAG = 1.3;
+  private static final double MASS = 1;
+  private static final double WALK_SPEED = 3;
+  private static final double SPRINT_SPEED = 8;
+  private static final double EATING_WALK_SPEED = 1.5;
+  private static final double SIZE = 24;
+  private static final double VACCUME_OFFSET_X = 16;
+  private static final double VACCUME_OFFSET_Y = -28;
+  private static final double VACCUME_SIZE_X = 80;
+  private static final double VACCUME_SIZE_Y = 80;
+  private static final int HOVER_COOLTIME = 5;
+  private static final int WALK_TO_SPRINT = 3;
+  private static final int HORIZONTAL_VELOCITY_CHANGE_DURATION = 3;
+  private static final int DAMAGE_COOLTIME = 50;
+  private static final int DAMAGE_CONTROL_COOLTIME = 10;
+  private static final double DAMAGE_KNOCKBACK_INITIAL_VELOCITY = 5;
 
   private enum State {
-    STOP, WALK, SPRINT, JUMP, FALL, HOVER, VACCUMING
+    STOP, WALK, SPRINT, JUMP, FALL, HOVER, VACCUMING, DAMAGED
   }
 
   private State state;
@@ -44,15 +48,19 @@ public class Player extends Rigitbody implements Hittable {
   private VacuumBox vacuumBox;
   private boolean isEating;
 
-  public Player(Scene scene, DVector2 position) {
+  private FieldStore store;
+
+  public Player(FieldScene scene, DVector2 position) {
     super(scene, null, position, new DVector2(1, 1), new CVector2(0, 0), new CVector2(24, 24), 1, MASS, DEFAULT_DRAG);
     state = State.STOP;
     counter = new FrameCounter();
+    counter.set(FrameCounter.KEY.LAST_DAMAGED, DAMAGE_COOLTIME);
     direction = 1;
     previousHorizontalVelocity = 0;
     targetHorizontalVelocity = 0;
     vacuumBox = null;
     isEating = false;
+    store = scene.getStore();
   }
 
   @Override
@@ -60,6 +68,19 @@ public class Player extends Rigitbody implements Hittable {
     counter.update();
 
     DVector2 velocity = getVelocity();
+
+    if (state == State.DAMAGED) {
+      if (counter.get(FrameCounter.KEY.LAST_DAMAGED) > DAMAGE_CONTROL_COOLTIME) {
+        state = State.STOP;
+      }
+    }
+    boolean isLocked = counter.get(FrameCounter.KEY.LAST_DAMAGED) <= DAMAGE_CONTROL_COOLTIME;
+
+    if (counter.get(FrameCounter.KEY.LAST_DAMAGED) < DAMAGE_COOLTIME) {
+      setVisibility(counter.get(FrameCounter.KEY.LAST_DAMAGED) % 4 <= 1);
+    } else {
+      setVisibility(true);
+    }
 
     if (isAirborne()) {
       switch (state) {
@@ -86,48 +107,51 @@ public class Player extends Rigitbody implements Hittable {
 
     handleHorizontalMove();
     velocity.x = previousHorizontalVelocity + (targetHorizontalVelocity - previousHorizontalVelocity)
-        * (Math.min(counter.get(FrameCounter.KEY.LAST_HORIZONTAL_VELOCITY_CHANGE), HORIZONTAL_VELOCITY_CHANGE_DURATION)
+        * (Math.min(counter.get(FrameCounter.KEY.LAST_HORIZONTAL_VELOCITY_CHANGE),
+            HORIZONTAL_VELOCITY_CHANGE_DURATION)
             / HORIZONTAL_VELOCITY_CHANGE_DURATION);
     setVelocity(velocity);
 
-    if (getScene().getApp().getKeyInputManager().getState(KeyCode.SPACE) == 1) {
-      if (isAirborne()) {
-        if (!isEating && counter.get(FrameCounter.KEY.LAST_HOVER) > HOVER_COOLTIME) {
-          addForce(new DVector2(0, -HOVER_FORCE));
-          setDrag(HOVER_DRAG);
-          state = State.HOVER;
-          counter.reset(FrameCounter.KEY.LAST_HOVER);
-        }
-      } else {
-        addForce(new DVector2(0, -JUMP_FORCE));
-        state = State.JUMP;
-        counter.reset(FrameCounter.KEY.LAST_HOVER);
-      }
-    }
-
-    if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == 1) {
-      if (isEating) {
-        disgorge();
-      } else {
+    if (!isLocked) {
+      if (getScene().getApp().getKeyInputManager().getState(KeyCode.SPACE) == 1) {
         if (isAirborne()) {
-          if (state == State.HOVER) {
-            stopHovering();
-            state = State.JUMP;
+          if (!isEating && counter.get(FrameCounter.KEY.LAST_HOVER) > HOVER_COOLTIME) {
+            addForce(new DVector2(0, -HOVER_FORCE));
+            setDrag(HOVER_DRAG);
+            state = State.HOVER;
+            counter.reset(FrameCounter.KEY.LAST_HOVER);
           }
         } else {
-          if (state != State.VACCUMING) {
-            state = State.VACCUMING;
-            vacuumBox = new VacuumBox();
-            changeSpeed(0, false);
-          }
+          addForce(new DVector2(0, -JUMP_FORCE));
+          state = State.JUMP;
+          counter.reset(FrameCounter.KEY.LAST_HOVER);
         }
       }
-    } else if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == -1) {
-      if (state == State.VACCUMING) {
-        state = State.STOP;
-        if (vacuumBox != null) {
-          vacuumBox.destroy();
-          vacuumBox = null;
+
+      if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == 1) {
+        if (isEating) {
+          disgorge();
+        } else {
+          if (isAirborne()) {
+            if (state == State.HOVER) {
+              stopHovering();
+              state = State.JUMP;
+            }
+          } else {
+            if (state != State.VACCUMING) {
+              state = State.VACCUMING;
+              vacuumBox = new VacuumBox();
+              changeSpeed(0, false);
+            }
+          }
+        }
+      } else if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == -1) {
+        if (state == State.VACCUMING) {
+          state = State.STOP;
+          if (vacuumBox != null) {
+            vacuumBox.destroy();
+            vacuumBox = null;
+          }
         }
       }
     }
@@ -141,6 +165,13 @@ public class Player extends Rigitbody implements Hittable {
   private void handleHorizontalMove() {
     if (state == State.VACCUMING)
       return;
+    if (state == State.DAMAGED) {
+      changeSpeed(-direction * DAMAGE_KNOCKBACK_INITIAL_VELOCITY
+          * (1 - ((double) counter.get(FrameCounter.KEY.LAST_DAMAGED)
+              / DAMAGE_CONTROL_COOLTIME)),
+          true);
+      return;
+    }
     int direction = 0;
     int inputCount = 0;
     if (getScene().getApp().getKeyInputManager().getState(KeyCode.A) > 0) {
@@ -235,7 +266,8 @@ public class Player extends Rigitbody implements Hittable {
     public static enum KEY {
       LAST_HOVER,
       LAST_WALK,
-      LAST_HORIZONTAL_VELOCITY_CHANGE
+      LAST_HORIZONTAL_VELOCITY_CHANGE,
+      LAST_DAMAGED
     }
 
     public FrameCounter() {
@@ -257,6 +289,10 @@ public class Player extends Rigitbody implements Hittable {
 
     public int get(KEY key) {
       return counts.get(key);
+    }
+
+    public void set(KEY key, int val) {
+      counts.put(key, val);
     }
   }
 
@@ -294,6 +330,14 @@ public class Player extends Rigitbody implements Hittable {
         state = State.STOP;
         isEating = true;
         enemy.kill();
+      } else {
+        if (counter.get(FrameCounter.KEY.LAST_DAMAGED) > DAMAGE_COOLTIME) {
+          direction = getPosition().x > enemy.getPosition().x ? -1 : 1;
+          store.changePlayerHP(-10);
+          enemy.damage(10, direction);
+          state = State.DAMAGED;
+          counter.reset(FrameCounter.KEY.LAST_DAMAGED);
+        }
       }
     }
   }

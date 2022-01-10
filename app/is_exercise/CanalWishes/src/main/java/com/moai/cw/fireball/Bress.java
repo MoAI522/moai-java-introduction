@@ -11,13 +11,11 @@ public class Bress extends Fireball {
   private static final double DISTANCE = 50;
   public static final int SIZE = 12;
 
-  private int direction;
   private int frame;
   private DVector2 originPos;
 
   public Bress(Scene scene, DVector2 position, DIRECTION direction) {
-    super(scene, position, new CVector2(24, 0), new CVector2(SIZE, SIZE), 0);
-    this.direction = direction == DIRECTION.LEFT ? -1 : 1;
+    super(scene, position, new CVector2(24, 0), new CVector2(SIZE, SIZE), 0, direction, 10);
     this.frame = 0;
     this.originPos = getPosition();
   }
@@ -29,7 +27,7 @@ public class Bress extends Fireball {
 
   @Override
   public void update(int dt) {
-    setPosition(originPos.add(new DVector2(Math.sin(Math.PI / 2 / LIFETIME * frame) * direction * DISTANCE, 0)));
+    setPosition(originPos.add(new DVector2(Math.sin(Math.PI / 2 / LIFETIME * frame) * getDirection() * DISTANCE, 0)));
 
     frame++;
     if (frame == LIFETIME) {

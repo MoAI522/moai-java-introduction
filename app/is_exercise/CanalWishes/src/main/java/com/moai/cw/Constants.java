@@ -18,5 +18,8 @@ public class Constants {
   public static final int LAYER_PLAYER = 5;
   public static final int LAYER_FIREBALL = 7;
   public static final int LAYER_UI_BACKGROUND = 10;
+  public static final int LAYER_UI = 11;
   public static final int LAYER_DEBUG = 20;
+
+  public static final int PLAYER_HP_MAX = 100;
 }

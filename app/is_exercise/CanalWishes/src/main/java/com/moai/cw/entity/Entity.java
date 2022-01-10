@@ -21,6 +21,7 @@ public abstract class Entity extends GameObject implements Drawable {
     this.textureCoordinate = textureCoordinate;
     this.textureSize = textureSize;
     this.textureIndex = (char) textureIndex;
+    this.visible = true;
   }
 
   @Override

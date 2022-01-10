@@ -11,20 +11,16 @@ public class Newbie extends Enemy {
   public static final double WALK_SPEED = 0.5;
 
   public Newbie(Scene scene, Spawner spawner, DVector2 position, DIRECTION direction, int type) {
-    super(scene, spawner, position, new CVector2(120, 0), new CVector2(24, 24), 0, direction, type);
+    super(scene, spawner, position, new CVector2(120, 0), new CVector2(24, 24), 0, direction, type, 30);
   }
 
   @Override
-  public void update(int dt) {
-    if (isVaccumed())
-      return;
+  public void enemyUpdate() {
     switch (getType()) {
       case 0: {
-        setVelocity(new DVector2((direction == DIRECTION.LEFT ? -1 : 1) * WALK_SPEED, getVelocity().y));
+        setVelocity(new DVector2(direction * WALK_SPEED, getVelocity().y));
         break;
       }
     }
-
-    physics(dt);
   }
 }

@@ -14,14 +14,12 @@ public class Fish extends Enemy {
   private int tempDirection;
 
   public Fish(Scene scene, Spawner spawner, DVector2 position, DIRECTION direction, int type) {
-    super(scene, spawner, position, new CVector2(120, 24), new CVector2(24, 24), 0, direction, type);
-    tempDirection = direction == DIRECTION.LEFT ? -1 : 1;
+    super(scene, spawner, position, new CVector2(120, 24), new CVector2(24, 24), 0, direction, type, 30);
+    tempDirection = this.direction;
   }
 
   @Override
-  public void update(int dt) {
-    if (isVaccumed())
-      return;
+  public void enemyUpdate() {
     switch (getType()) {
       case 0: {
         if (!isAirborne()) {
@@ -32,7 +30,5 @@ public class Fish extends Enemy {
         break;
       }
     }
-
-    physics(dt);
   }
 }
