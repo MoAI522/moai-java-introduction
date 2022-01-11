@@ -16,5 +16,11 @@
         "default": 0
       }
     ]
+  },
+  {
+    "class": "com.moai.cw.field_object.Credit",
+    "texture_src": "resources/textures/0.png",
+    "coordinate": [48, 48, 48, 48],
+    "params": [{ "name": "1index", "type": "number", "default": "0" }]
   }
 ]

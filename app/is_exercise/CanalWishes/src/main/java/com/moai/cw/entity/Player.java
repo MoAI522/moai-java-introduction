@@ -160,6 +160,12 @@ public class Player extends Rigitbody implements Hittable {
       if (getScene().getApp().getKeyInputManager().getState(KeyCode.W) == 1) {
         enterDoor();
       }
+
+      if (getScene().getApp().getKeyInputManager().getState(KeyCode.S) >= 1) {
+        if (isOnHalfFloor()) {
+          setPosition(getPosition().add(new DVector2(0, 1)));
+        }
+      }
     }
 
     physics(dt);

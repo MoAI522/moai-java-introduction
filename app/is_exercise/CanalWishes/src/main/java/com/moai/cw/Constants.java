@@ -23,4 +23,5 @@ public class Constants {
   public static final int LAYER_DEBUG = 20;
 
   public static final int PLAYER_HP_MAX = 100;
+  public static final int CREDITS_NUMBER = 5;
 }

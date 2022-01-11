@@ -17,9 +17,11 @@ import com.moai.cw.util.MapData;
 
 public class Stage extends GameObject {
   private MapData mapData;
+  private BlockInformationManager blockInformationManager;
 
   public Stage(Scene scene) {
     super(scene, new DVector2(0, 0));
+    blockInformationManager = new BlockInformationManager(scene);
   }
 
   private void loadFile(String mapID) {
@@ -48,18 +50,19 @@ public class Stage extends GameObject {
       for (int j = 0; j < mapData.getMapSize().get(0); j++) {
         if (mapData.getTiles().get(i).get(j) == 0)
           continue;
+        int index = mapData.getTiles().get(i).get(j) - 1;
         new Block(getScene(), this,
             new DVector2(j * Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE),
-            mapData.getTiles().get(i).get(j) - 1);
+            index, blockInformationManager.getType(index));
       }
     }
     for (int i = 0; i < mapData.getMapSize().get(0); i++) {
-      new Block(getScene(), this, new DVector2(i * Constants.MAPCHIP_SIZE, -Constants.MAPCHIP_SIZE), 0);
+      new Block(getScene(), this, new DVector2(i * Constants.MAPCHIP_SIZE, -Constants.MAPCHIP_SIZE), 0, 0);
     }
     for (int i = 0; i < mapData.getMapSize().get(1); i++) {
-      new Block(getScene(), this, new DVector2(-Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), 0);
+      new Block(getScene(), this, new DVector2(-Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), 0, 0);
       new Block(getScene(), this,
-          new DVector2(mapData.getMapSize().get(0) * Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), 0);
+          new DVector2(mapData.getMapSize().get(0) * Constants.MAPCHIP_SIZE, i * Constants.MAPCHIP_SIZE), 0, 0);
     }
 
     for (EnemyData enemy : mapData.getEnemies()) {

@@ -14,7 +14,7 @@ public abstract class Rigitbody extends Entity {
 
   private DVector2 velocity;
   private DVector2 currentForce;
-  private boolean airborne;
+  private boolean airborne, onHalfFloor;
 
   public Rigitbody(Scene scene, GameObject parent, DVector2 position, DVector2 scale, CVector2 textureCoordinate,
       CVector2 textureSize, int textureIndex, double mass, double drag) {
@@ -24,6 +24,7 @@ public abstract class Rigitbody extends Entity {
     this.mass = mass;
     this.drag = drag;
     airborne = false;
+    onHalfFloor = false;
   }
 
   protected final void addForce(DVector2 force) {
@@ -32,6 +33,7 @@ public abstract class Rigitbody extends Entity {
 
   protected final void physics(int dt) {
     airborne = true;
+    onHalfFloor = false;
 
     DVector2 dp = velocity.add(currentForce.multipleScalar(1 / drag).negate())
         .multipleScalar((mass / drag) * (1 - Math.exp(-drag / mass * dt))).add(currentForce.multipleScalar(dt / drag));
@@ -45,6 +47,8 @@ public abstract class Rigitbody extends Entity {
         if (!(gameObject instanceof Block))
           continue;
         Block block = (Block) gameObject;
+        if (block.getType() == 1 || block.getType() == 2)
+          continue;
         if (!Rectangle.intersect(rect, block.getRectangle()))
           continue;
         double tr = 1;
@@ -73,6 +77,8 @@ public abstract class Rigitbody extends Entity {
         if (!(gameObject instanceof Block))
           continue;
         Block block = (Block) gameObject;
+        if (block.getType() == 1)
+          continue;
         if (!Rectangle.intersect(rect, block.getRectangle()))
           continue;
         double tr = 1;
@@ -82,13 +88,18 @@ public abstract class Rigitbody extends Entity {
             tr = 1;
           } else {
             airborne = false;
+            if (block.getType() == 2) {
+              onHalfFloor = true;
+            }
           }
         } else if (dp.y == 0) {
           tr = 1;
         } else {
-          tr = (getPosition().y - block.getRectangle().y1) / -dp.y;
-          if (tr < 0)
-            tr = 1;
+          if (block.getType() != 2) {
+            tr = (getPosition().y - block.getRectangle().y1) / -dp.y;
+            if (tr < 0)
+              tr = 1;
+          }
         }
         tr = Math.min(tr, 1);
         r = Math.min(tr, r);
@@ -108,6 +119,10 @@ public abstract class Rigitbody extends Entity {
 
   protected final boolean isAirborne() {
     return airborne;
+  }
+
+  protected final boolean isOnHalfFloor() {
+    return onHalfFloor;
   }
 
   protected final void setVelocity(DVector2 velocity) {

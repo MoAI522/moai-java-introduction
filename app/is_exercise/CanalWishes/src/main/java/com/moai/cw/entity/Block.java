@@ -7,11 +7,14 @@ import com.moai.cw.util.CVector2;
 import com.moai.cw.util.DVector2;
 
 public class Block extends Entity {
-  public Block(Scene scene, GameObject parent, DVector2 position, int blockIndex) {
+  private int type;
+
+  public Block(Scene scene, GameObject parent, DVector2 position, int blockIndex, int type) {
     super(scene, parent, position, new DVector2(1, 1),
         new CVector2(blockIndex % Constants.MAPCHIP_COLUMN * Constants.MAPCHIP_SIZE,
             blockIndex / Constants.MAPCHIP_COLUMN * Constants.MAPCHIP_SIZE),
         new CVector2(Constants.MAPCHIP_SIZE, Constants.MAPCHIP_SIZE), 0);
+    this.type = type;
   }
 
   @Override
@@ -22,5 +25,9 @@ public class Block extends Entity {
   @Override
   public int getLayer() {
     return Constants.LAYER_BACKGROUND;
+  }
+
+  public int getType() {
+    return type;
   }
 }
