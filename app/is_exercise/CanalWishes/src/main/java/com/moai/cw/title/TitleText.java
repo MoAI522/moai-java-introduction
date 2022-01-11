@@ -16,7 +16,7 @@ public class TitleText extends GameObject implements Drawable {
 
   @Override
   public GraphicObject draw(DVector2 offset) {
-    return new GraphicObject(getPosition(), new DVector2(1, 1), 3, new CVector2(0, 79), new CVector2(145, 19));
+    return new GraphicObject(getPosition(), new DVector2(1, 1), 3, new CVector2(0, 79), new CVector2(145, 19), false);
   }
 
   @Override

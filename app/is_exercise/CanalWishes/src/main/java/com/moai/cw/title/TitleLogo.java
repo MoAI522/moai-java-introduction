@@ -16,7 +16,7 @@ public class TitleLogo extends GameObject implements Drawable {
 
   @Override
   public GraphicObject draw(DVector2 offset) {
-    return new GraphicObject(getPosition(), new DVector2(1, 1), 3, new CVector2(0, 0), new CVector2(204, 79));
+    return new GraphicObject(getPosition(), new DVector2(1, 1), 3, new CVector2(0, 0), new CVector2(204, 79), false);
   }
 
   @Override

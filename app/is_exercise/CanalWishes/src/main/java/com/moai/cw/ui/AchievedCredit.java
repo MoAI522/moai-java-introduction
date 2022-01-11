@@ -21,7 +21,7 @@ public class AchievedCredit extends UI {
   public GraphicObject draw(DVector2 offset) {
     return new GraphicObject(getPosition().add(offset), new DVector2(1, 1), 0,
         new CVector2(0 + index * 12, achieved ? 24 : 0),
-        achieved ? new CVector2(12, 12) : new CVector2(1, 1));
+        achieved ? new CVector2(12, 12) : new CVector2(1, 1), false);
   }
 
   @Override

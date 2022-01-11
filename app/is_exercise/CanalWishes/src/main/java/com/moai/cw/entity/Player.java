@@ -38,6 +38,12 @@ public class Player extends Rigitbody implements Hittable {
   private static final int DAMAGE_COOLTIME = 50;
   private static final int DAMAGE_CONTROL_COOLTIME = 10;
   private static final double DAMAGE_KNOCKBACK_INITIAL_VELOCITY = 5;
+  private static final int ANIMATION_FREQUENCY_WALK = 9;
+  private static final int ANIMATION_COUNT_WALK = 3;
+  private static final int ANIMATION_FREQUENCY_SPRINT = 3;
+  private static final int ANIMATION_FREQUENCY_VACCUMING = 6;
+  private static final int ANIMATION_COUNT_VACCUMING = 2;
+  private static final int ANIMATION_FREQUENCY_EATING = 18;
 
   private enum State {
     STOP, WALK, SPRINT, JUMP, FALL, HOVER, VACCUMING, DAMAGED
@@ -54,9 +60,9 @@ public class Player extends Rigitbody implements Hittable {
 
   public Player(FieldScene scene, DVector2 position) {
     super(scene, null, position, new DVector2(1, 1), new CVector2(0, 0), new CVector2(24, 24), 1, MASS, DEFAULT_DRAG);
-    state = State.STOP;
     counter = new FrameCounter();
     counter.set(FrameCounter.KEY.LAST_DAMAGED, DAMAGE_COOLTIME);
+    changeState(State.STOP);
     direction = 1;
     previousHorizontalVelocity = 0;
     targetHorizontalVelocity = 0;
@@ -73,7 +79,7 @@ public class Player extends Rigitbody implements Hittable {
 
     if (state == State.DAMAGED) {
       if (counter.get(FrameCounter.KEY.LAST_DAMAGED) > DAMAGE_CONTROL_COOLTIME) {
-        state = State.STOP;
+        changeState(State.STOP);
       }
     }
     boolean isLocked = counter.get(FrameCounter.KEY.LAST_DAMAGED) <= DAMAGE_CONTROL_COOLTIME;
@@ -88,11 +94,11 @@ public class Player extends Rigitbody implements Hittable {
       switch (state) {
         case WALK:
         case SPRINT:
-          state = State.JUMP;
+          changeState(State.JUMP);
           break;
         case JUMP:
           if (velocity.y > 0) {
-            state = State.FALL;
+            changeState(State.FALL);
           }
           break;
         default:
@@ -101,7 +107,7 @@ public class Player extends Rigitbody implements Hittable {
       switch (state) {
         case HOVER:
           stopHovering();
-          state = State.STOP;
+          changeState(State.STOP);
           break;
         default:
       }
@@ -120,12 +126,12 @@ public class Player extends Rigitbody implements Hittable {
           if (!isEating && counter.get(FrameCounter.KEY.LAST_HOVER) > HOVER_COOLTIME) {
             addForce(new DVector2(0, -HOVER_FORCE));
             setDrag(HOVER_DRAG);
-            state = State.HOVER;
+            changeState(State.HOVER);
             counter.reset(FrameCounter.KEY.LAST_HOVER);
           }
         } else {
           addForce(new DVector2(0, -JUMP_FORCE));
-          state = State.JUMP;
+          changeState(State.JUMP);
           counter.reset(FrameCounter.KEY.LAST_HOVER);
         }
       }
@@ -137,11 +143,11 @@ public class Player extends Rigitbody implements Hittable {
           if (isAirborne()) {
             if (state == State.HOVER) {
               stopHovering();
-              state = State.JUMP;
+              changeState(State.JUMP);
             }
           } else {
             if (state != State.VACCUMING) {
-              state = State.VACCUMING;
+              changeState(State.VACCUMING);
               vacuumBox = new VacuumBox();
               changeSpeed(0, false);
             }
@@ -149,7 +155,7 @@ public class Player extends Rigitbody implements Hittable {
         }
       } else if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == -1) {
         if (state == State.VACCUMING) {
-          state = State.STOP;
+          changeState(State.STOP);
           if (vacuumBox != null) {
             vacuumBox.destroy();
             vacuumBox = null;
@@ -169,9 +175,17 @@ public class Player extends Rigitbody implements Hittable {
     }
 
     physics(dt);
+
+    updateTexture();
+
     getScene().getApp().setDebugInfo("player-pos", getPosition().toString());
     getScene().getApp().setDebugInfo("player-state", state.toString());
     getScene().getApp().setDebugInfo("player-eating", Boolean.toString(isEating));
+  }
+
+  private void changeState(State newState) {
+    state = newState;
+    counter.reset(FrameCounter.KEY.LAST_STATE_CHANGE);
   }
 
   private void handleHorizontalMove() {
@@ -197,7 +211,7 @@ public class Player extends Rigitbody implements Hittable {
     if (direction == 0) {
       if (counter.get(FrameCounter.KEY.LAST_WALK) > WALK_TO_SPRINT) {
         if (!isAirborne()) {
-          state = State.STOP;
+          changeState(State.STOP);
         }
         changeSpeed(0, false);
       }
@@ -208,14 +222,14 @@ public class Player extends Rigitbody implements Hittable {
       case STOP:
         changeSpeed(direction * WALK_SPEED, true);
         if (!isAirborne()) {
-          state = State.WALK;
+          changeState(State.WALK);
           counter.reset(FrameCounter.KEY.LAST_WALK);
         }
         break;
       case WALK:
         if (inputCount == 1 && this.direction == direction && !isEating) {
           changeSpeed(direction * SPRINT_SPEED, false);
-          state = State.SPRINT;
+          changeState(State.SPRINT);
         } else {
           if (isEating) {
             changeSpeed(direction * EATING_WALK_SPEED, false);
@@ -237,7 +251,7 @@ public class Player extends Rigitbody implements Hittable {
           changeSpeed(direction * WALK_SPEED, false);
         }
         if (!isAirborne()) {
-          state = State.WALK;
+          changeState(State.WALK);
         }
         break;
       default:
@@ -285,6 +299,58 @@ public class Player extends Rigitbody implements Hittable {
     scene.moveStage(door.getLink(), door.getDestination());
   }
 
+  private void updateTexture() {
+    switch (state) {
+      case STOP:
+        if (isEating) {
+          setTextureCoordinate(new CVector2((int) SIZE * 5, 0));
+        } else {
+          setTextureCoordinate(new CVector2(0, 0));
+        }
+        break;
+      case WALK:
+        if (isEating) {
+          setTextureCoordinate(
+              new CVector2((int) SIZE * 5, (int) (Math.floor((double) (counter.get(FrameCounter.KEY.LAST_STATE_CHANGE)
+                  % ANIMATION_FREQUENCY_EATING) / (ANIMATION_FREQUENCY_EATING / ANIMATION_COUNT_WALK)) * SIZE)));
+        } else {
+          setTextureCoordinate(
+              new CVector2(0, (int) (Math.floor((double) (counter.get(FrameCounter.KEY.LAST_STATE_CHANGE)
+                  % ANIMATION_FREQUENCY_WALK) / (ANIMATION_FREQUENCY_WALK / ANIMATION_COUNT_WALK)) * SIZE)));
+        }
+        break;
+      case SPRINT:
+        setTextureCoordinate(new CVector2(0, (int) (Math.floor((double) counter.get(FrameCounter.KEY.LAST_STATE_CHANGE)
+            % ANIMATION_FREQUENCY_SPRINT / (ANIMATION_FREQUENCY_SPRINT / ANIMATION_COUNT_WALK)) * SIZE)));
+        break;
+      case JUMP:
+        if (isEating) {
+          setTextureCoordinate(new CVector2((int) SIZE * 5, 0));
+        } else {
+          setTextureCoordinate(new CVector2((int) SIZE, 0));
+        }
+        break;
+      case HOVER:
+        setTextureCoordinate(new CVector2((int) SIZE * 2, 0));
+        break;
+      case FALL:
+        if (isEating) {
+          setTextureCoordinate(new CVector2((int) SIZE * 5, 0));
+        } else {
+          setTextureCoordinate(new CVector2((int) SIZE * 3, 0));
+        }
+        break;
+      case VACCUMING:
+      case DAMAGED:
+        setTextureCoordinate(
+            new CVector2((int) SIZE * 4, (int) (Math.floor((double) counter.get(FrameCounter.KEY.LAST_STATE_CHANGE)
+                % ANIMATION_FREQUENCY_VACCUMING / (ANIMATION_FREQUENCY_VACCUMING / ANIMATION_COUNT_VACCUMING))
+                * SIZE)));
+        break;
+    }
+    setIsReverse(direction == -1);
+  }
+
   private static class FrameCounter {
     private HashMap<KEY, Integer> counts;
 
@@ -292,7 +358,8 @@ public class Player extends Rigitbody implements Hittable {
       LAST_HOVER,
       LAST_WALK,
       LAST_HORIZONTAL_VELOCITY_CHANGE,
-      LAST_DAMAGED
+      LAST_DAMAGED,
+      LAST_STATE_CHANGE,
     }
 
     public FrameCounter() {
@@ -352,7 +419,7 @@ public class Player extends Rigitbody implements Hittable {
     if (target instanceof Enemy) {
       Enemy enemy = (Enemy) target;
       if (enemy.isVaccumed()) {
-        state = State.STOP;
+        changeState(State.STOP);
         isEating = true;
         enemy.kill();
       } else {
@@ -364,7 +431,7 @@ public class Player extends Rigitbody implements Hittable {
             vacuumBox.destroy();
             vacuumBox = null;
           }
-          state = State.DAMAGED;
+          changeState(State.DAMAGED);
           counter.reset(FrameCounter.KEY.LAST_DAMAGED);
         }
       }

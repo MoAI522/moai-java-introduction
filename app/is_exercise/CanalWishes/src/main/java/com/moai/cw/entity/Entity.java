@@ -12,6 +12,7 @@ public abstract class Entity extends GameObject implements Drawable {
   private DVector2 scale;
   private char textureIndex;
   private CVector2 textureCoordinate, textureSize;
+  private boolean isReverse;
   private boolean visible;
 
   public Entity(Scene scene, GameObject parent, DVector2 position, DVector2 scale, CVector2 textureCoordinate,
@@ -21,16 +22,25 @@ public abstract class Entity extends GameObject implements Drawable {
     this.textureCoordinate = textureCoordinate;
     this.textureSize = textureSize;
     this.textureIndex = (char) textureIndex;
+    this.isReverse = false;
     this.visible = true;
   }
 
   @Override
   public final GraphicObject draw(DVector2 offset) {
-    return new GraphicObject(getPosition().add(offset), scale, textureIndex, textureCoordinate, textureSize);
+    return new GraphicObject(getPosition().add(offset), scale, textureIndex, textureCoordinate, textureSize, isReverse);
   };
 
   protected final void setScale(DVector2 scale) {
     this.scale = scale;
+  }
+
+  protected final void setTextureCoordinate(CVector2 textureCoordinate) {
+    this.textureCoordinate = textureCoordinate;
+  }
+
+  protected final void setIsReverse(boolean isReverse) {
+    this.isReverse = isReverse;
   }
 
   public final void setVisibility(boolean visible) {

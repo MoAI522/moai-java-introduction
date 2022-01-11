@@ -12,17 +12,21 @@ public class GraphicObject {
   public char textureIndex;
   public CVector2 uv, size, trimUV, trimSize;
   public Color color;
+  public boolean hReverse;
 
-  public GraphicObject(DVector2 position, DVector2 scale, int textureIndex, CVector2 uv, CVector2 size) {
+  public GraphicObject(DVector2 position, DVector2 scale, int textureIndex, CVector2 uv, CVector2 size,
+      boolean hReverse) {
     type = TYPE.TEXTURE;
     this.position = position;
     this.scale = scale;
     this.textureIndex = (char) textureIndex;
     this.uv = uv;
     this.size = size;
+    this.hReverse = hReverse;
   }
 
-  public GraphicObject(DVector2 position, DVector2 scale, int textureIndex, CVector2 uv, CVector2 size, CVector2 trimUV,
+  public GraphicObject(DVector2 position, DVector2 scale, int textureIndex, CVector2 uv, CVector2 size,
+      CVector2 trimUV,
       CVector2 trimSize) {
     type = TYPE.TEXTURE_SCROLL;
     this.position = position;
