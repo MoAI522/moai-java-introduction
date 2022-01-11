@@ -19,9 +19,10 @@ export type TEnemyData = {
   _index: number;
 };
 
-export type TItemData = {
+export type TFOData = {
   id: string;
   class: string;
   position: Array<number>;
+  params: Array<string | number>;
   _index: number;
 };

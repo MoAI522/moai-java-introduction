@@ -2,25 +2,24 @@
   import {
     command,
     enemy_index,
-    item_index,
+    fo_index,
     mapchip_index,
     mapchip_size,
     focused_enemy,
-    focused_item,
-    TCommand,
+    focused_fo,
   } from "../stores/editor-config";
   import {
     enemies,
     map_height,
-    items,
+    field_objects,
     tiles,
     map_width,
   } from "../stores/map-data";
   import TextureRenderer from "../TextureRenderer.svelte";
   import enemy_data from "../assets/enemy.json";
-  import item_data from "../assets/item.json";
+  import fo_data from "../assets/fo.json";
   import { v4 as uuid } from "uuid";
-  import type { TEnemyData, TItemData } from "../types";
+  import type { TEnemyData, TFOData } from "../types";
 
   $map_width = 26;
   $map_height = 20;
@@ -65,25 +64,30 @@
         },
       ];
       $focused_enemy = id;
-    } else if ($command == "ITEM") {
-      if ($items.some((val) => val.position[0] == x && val.position[1] == y)) {
-        const id = $items.find(
+    } else if ($command == "FIELD_OBJECT") {
+      if (
+        $field_objects.some(
+          (val) => val.position[0] == x && val.position[1] == y
+        )
+      ) {
+        const id = $field_objects.find(
           (val) => val.position[0] == x && val.position[1] == y
         ).id;
-        $focused_item = id;
+        $focused_fo = id;
         return;
       }
       const id = uuid();
-      $items = [
-        ...$items,
+      $field_objects = [
+        ...$field_objects,
         {
           id,
-          class: item_data[$item_index].class,
+          class: fo_data[$fo_index].class,
           position: [x, y],
-          _index: $item_index,
+          params: fo_data[$fo_index].params.map((v) => v.default),
+          _index: $fo_index,
         },
       ];
-      $focused_item = id;
+      $focused_fo = id;
     }
   };
 
@@ -135,7 +139,7 @@
         },
         onClick: (e: MouseEvent) => {
           if ($command !== "ENEMY" && $command !== "LIST") return;
-          $focused_item = null;
+          $focused_fo = null;
           if (e.ctrlKey) {
             $enemies = $enemies.filter((v) => v.id !== enemy.id);
             $focused_enemy = null;
@@ -155,20 +159,20 @@
     generateEnemiesToRender($enemies, _focused_enemy)
   );
 
-  let items_to_render;
-  const generateItemsToRender = (
-    _items: Array<TItemData>,
-    _focused_item: string
+  let field_objects_to_render;
+  const generateField_objectsToRender = (
+    _field_objects: Array<TFOData>,
+    _focused_fo: string
   ) => {
-    items_to_render = _items.map((item) => {
-      const data = item_data.find((val) => val.class === item.class);
+    field_objects_to_render = _field_objects.map((fo) => {
+      const data = fo_data.find((val) => val.class === fo.class);
       return {
-        x: item.position[0] * $mapchip_size,
-        y: item.position[1] * $mapchip_size,
+        x: fo.position[0] * $mapchip_size,
+        y: fo.position[1] * $mapchip_size,
         w: data.coordinate[2] * 2,
         h: data.coordinate[3] * 2,
         render_data: {
-          index: item._index,
+          index: fo._index,
           src: data.texture_src,
           u: data.coordinate[0],
           v: data.coordinate[1],
@@ -176,25 +180,27 @@
           th: data.coordinate[3],
           w: data.coordinate[2] * 2,
           h: data.coordinate[3] * 2,
-          active: item.id == _focused_item,
+          active: fo.id == _focused_fo,
         },
         onClick: (e: MouseEvent) => {
-          if ($command !== "ITEM" && $command !== "LIST") return;
+          if ($command !== "FIELD_OBJECT" && $command !== "LIST") return;
           $focused_enemy = null;
           if (e.ctrlKey) {
-            $items = $items.filter((v) => v.id !== item.id);
-            $focused_item = null;
+            $field_objects = $field_objects.filter((v) => v.id !== fo.id);
+            $focused_fo = null;
             return;
           }
-          if ($focused_item == item.id) return;
-          $focused_item = item.id;
+          if ($focused_fo == fo.id) return;
+          $focused_fo = fo.id;
         },
       };
     });
   };
-  items.subscribe((_items) => generateItemsToRender(_items, $focused_item));
-  focused_item.subscribe((_focused_item) =>
-    generateItemsToRender($items, _focused_item)
+  field_objects.subscribe((_field_objects) =>
+    generateField_objectsToRender(_field_objects, $focused_fo)
+  );
+  focused_fo.subscribe((_focused_fo) =>
+    generateField_objectsToRender($field_objects, _focused_fo)
   );
 </script>
 
@@ -231,7 +237,7 @@
       {/each}
     </div>
     <div>
-      {#each items_to_render as item}
+      {#each field_objects_to_render as item}
         <div
           class="cell"
           style="left:{item.x}px;top:{item.y}px;width:{item.w}px;height:{item.h}px"

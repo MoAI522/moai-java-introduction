@@ -275,7 +275,8 @@ public class Player extends Rigitbody implements Hittable {
       return;
     if (!(area instanceof Door))
       return;
-    scene.moveStage(((Door) area).getLink());
+    Door door = (Door) area;
+    scene.moveStage(door.getLink(), door.getDestination());
   }
 
   private static class FrameCounter {
@@ -353,6 +354,10 @@ public class Player extends Rigitbody implements Hittable {
           direction = getPosition().x > enemy.getPosition().x ? -1 : 1;
           store.changePlayerHP(-10);
           enemy.damage(10, direction);
+          if (vacuumBox != null) {
+            vacuumBox.destroy();
+            vacuumBox = null;
+          }
           state = State.DAMAGED;
           counter.reset(FrameCounter.KEY.LAST_DAMAGED);
         }

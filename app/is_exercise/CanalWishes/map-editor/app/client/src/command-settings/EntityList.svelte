@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { focused_enemy, focused_item } from "../stores/editor-config";
+  import { focused_enemy, focused_fo } from "../stores/editor-config";
 
-  import { enemies, items } from "../stores/map-data";
+  import { enemies, field_objects } from "../stores/map-data";
 </script>
 
 <div class="pane">
@@ -12,7 +12,7 @@
           class="cell {$focused_enemy == enemy.id && 'active'}"
           on:click={() => {
             $focused_enemy = enemy.id;
-            $focused_item = null;
+            $focused_fo = null;
           }}
         >
           <div class="cell-inner">[{enemy.class}]{enemy.id}</div>
@@ -22,15 +22,15 @@
   </div>
   <div class="list">
     <div class="list-inner">
-      {#each $items as item}
+      {#each $field_objects as fo}
         <div
-          class="cell {$focused_item == item.id && 'active'}"
+          class="cell {$focused_fo == fo.id && 'active'}"
           on:click={() => {
             $focused_enemy = null;
-            $focused_item = item.id;
+            $focused_fo = fo.id;
           }}
         >
-          <div class="cell-inner">[{item.class}]{item.id}</div>
+          <div class="cell-inner">[{fo.class}]{fo.id}</div>
         </div>
       {/each}
     </div>

@@ -1,15 +1,22 @@
 <script lang="ts">
-  import { focused_enemy, focused_item } from "../stores/editor-config";
-  import { enemies, items, map_height, map_width } from "../stores/map-data";
+  import { focused_enemy, focused_fo } from "../stores/editor-config";
+  import {
+    enemies,
+    field_objects,
+    map_height,
+    map_width,
+  } from "../stores/map-data";
   import enemy_data from "../assets/enemy.json";
-  import item_data from "../assets/item.json";
+  import fo_data from "../assets/fo.json";
 
   $: enemy =
     $focused_enemy != null
       ? $enemies.find((v) => v.id === $focused_enemy)
       : null;
-  $: item =
-    $focused_item != null ? $items.find((v) => v.id === $focused_item) : null;
+  $: fo =
+    $focused_fo != null
+      ? $field_objects.find((v) => v.id === $focused_fo)
+      : null;
 
   const onChange = () => {
     if (enemy != null) {
@@ -30,14 +37,15 @@
         }
       });
       $enemies = _enemies;
-    } else if (item != null) {
-      const _items = $items.map((v) => {
-        if (v.id === $focused_item) {
-          return item;
+    } else if (fo != null) {
+      const _field_objects = $field_objects.map((v) => {
+        if (v.id === $focused_fo) {
+          return fo;
         } else {
           return v;
         }
       });
+      $field_objects = _field_objects;
     }
   };
 </script>
@@ -104,23 +112,23 @@
         <option value="right">right</option></select
       >
     </div>
-  {:else if $focused_item != null}
+  {:else if $focused_fo != null}
     <div class="ins-data">
       id:<input
         type="input"
-        id="ins-item-id"
+        id="ins-fo-id"
         size="1"
-        bind:value={item.id}
+        bind:value={fo.id}
         disabled
       />
     </div>
     <div class="ins-data">
       class:<select
-        id="ins-item-class"
-        bind:value={item.class}
+        id="ins-fo-class"
+        bind:value={fo.class}
         on:change={onChange}
       >
-        {#each item_data as v}
+        {#each fo_data as v}
           <option value={v.class}>{v.class.replace("com.moai.cw.", "")}</option>
         {/each}
       </select>
@@ -128,23 +136,44 @@
     <div class="ins-data">
       position-x:<input
         type="number"
-        id="ins-item-position-x"
+        id="ins-fo-position-x"
         min="0"
         max={$map_width - 1}
-        bind:value={item.position[0]}
+        bind:value={fo.position[0]}
         on:change={onChange}
       />
     </div>
     <div class="ins-data">
       position-y:<input
         type="number"
-        id="ins-item-position-y"
+        id="ins-fo-position-y"
         min="0"
         max={$map_height - 1}
-        bind:value={item.position[1]}
+        bind:value={fo.position[1]}
         on:change={onChange}
       />
     </div>
+    {#each [...Array(fo.params.length)].map((_, i) => i) as i}
+      {#if fo_data.find((v) => v.class === fo.class).params[i].type === "string"}
+        <div class="ins-data">
+          {fo_data.find((v) => v.class === fo.class).params[i].name}:<input
+            type="input"
+            id={`ins-fo-param-${i}`}
+            bind:value={fo.params[i]}
+            on:change={onChange}
+          />
+        </div>
+      {:else if fo_data.find((v) => v.class === fo.class).params[i].type === "number"}
+        <div class="ins-data">
+          {fo_data.find((v) => v.class === fo.class).params[i].name}:<input
+            type="number"
+            id={`ins-fo-param-${i}`}
+            bind:value={fo.params[i]}
+            on:change={onChange}
+          />
+        </div>
+      {/if}
+    {/each}
   {/if}
 </div>
 

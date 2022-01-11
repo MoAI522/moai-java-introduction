@@ -1,7 +1,6 @@
 package com.moai.cw.entity;
 
 import com.moai.cw.Constants;
-import com.moai.cw.entity.Player.VacuumBox;
 import com.moai.cw.game_object.GameObject;
 import com.moai.cw.game_object.Spawner;
 import com.moai.cw.interfaces.Hittable;
@@ -97,7 +96,7 @@ public abstract class Enemy extends Rigitbody implements OffScreenListener, Hitt
           try {
             sleep(1000 / Constants.TARGET_FPS);
           } catch (Exception e) {
-
+            e.printStackTrace();
           }
         }
       }
@@ -107,9 +106,7 @@ public abstract class Enemy extends Rigitbody implements OffScreenListener, Hitt
 
   @Override
   public void onHit(GameObject target) {
-    if (target instanceof VacuumBox) {
-      this.vaccumed = true;
-    }
+
   }
 
   public void damage(int value, int direction) {

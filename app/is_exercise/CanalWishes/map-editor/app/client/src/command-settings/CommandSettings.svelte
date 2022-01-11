@@ -4,7 +4,7 @@
   import EnemyPicker from "./EnemyPicker.svelte";
   import EntityList from "./EntityList.svelte";
   import Files from "./Files.svelte";
-  import ItemPicker from "./ItemPicker.svelte";
+  import FOPicker from "./FOPicker.svelte";
   import Resize from "./Resize.svelte";
 </script>
 
@@ -12,8 +12,8 @@
   <BlockPicker />
 {:else if $command == "ENEMY"}
   <EnemyPicker />
-{:else if $command == "ITEM"}
-  <ItemPicker />
+{:else if $command == "FIELD_OBJECT"}
+  <FOPicker />
 {:else if $command == "LIST"}
   <EntityList />
 {:else if $command == "RESIZE"}

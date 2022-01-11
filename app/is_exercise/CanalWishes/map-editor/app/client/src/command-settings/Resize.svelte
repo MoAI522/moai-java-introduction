@@ -1,7 +1,7 @@
 <script lang="ts">
   import {
     enemies,
-    items,
+    field_objects,
     map_height,
     map_width,
     tiles,
@@ -39,7 +39,7 @@
           enemy.position[1] >= 0 &&
           enemy.position[1] < h
       );
-    $items = $items
+    $field_objects = $field_objects
       .map((item) => ({
         ...item,
         position: [item.position[0] + offset_x, item.position[1] + offset_y],

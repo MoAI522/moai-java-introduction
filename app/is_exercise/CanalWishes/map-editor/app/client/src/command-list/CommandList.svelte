@@ -3,7 +3,7 @@
     COMMANDS,
     command,
     focused_enemy,
-    focused_item,
+    focused_fo,
   } from "../stores/editor-config";
 
   const commands = COMMANDS.map((cmd) => {
@@ -15,8 +15,8 @@
       case "ENEMY":
         text = "敵配置";
         break;
-      case "ITEM":
-        text = "アイテム配置";
+      case "FIELD_OBJECT":
+        text = "FO配置";
         break;
       case "LIST":
         text = "エンティティ管理";
@@ -42,7 +42,7 @@
         on:click={() => {
           $command = cmd.cmd;
           $focused_enemy = null;
-          $focused_item = null;
+          $focused_fo = null;
         }}
       >
         {cmd.text}

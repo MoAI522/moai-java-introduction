@@ -9,7 +9,7 @@ import com.moai.cw.util.Direction.DIRECTION;
 
 public class Vomit extends Fireball implements OffScreenListener {
   public static final int SIZE = 24;
-  public static final double SPEED = 5;
+  public static final double SPEED = 8;
 
   private int frame;
   private DVector2 originPos;

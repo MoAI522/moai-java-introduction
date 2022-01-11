@@ -18,3 +18,5 @@ services:
     volumes:
       - ./app/client:/client/
     command: "/bin/bash -c 'yarn install --frozen-lockfile && yarn dev'"
+    environment:
+      - CHOKIDAR_USEPOLLING=1

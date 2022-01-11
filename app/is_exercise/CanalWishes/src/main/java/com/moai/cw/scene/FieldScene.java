@@ -10,6 +10,7 @@ import com.moai.cw.game_object.Stage;
 import com.moai.cw.store.FieldStore;
 import com.moai.cw.ui.FieldUI;
 import com.moai.cw.util.DVector2;
+import com.moai.cw.util.IVector2;
 import com.moai.cw.util.Rectangle;
 
 public class FieldScene extends Scene {
@@ -32,7 +33,7 @@ public class FieldScene extends Scene {
     Camera uiCamera = new Camera(this, uiLayers, 1);
     addCamera(uiCamera);
     stage = new Stage(this);
-    moveStage("0");
+    moveStage("0", new IVector2(2, 3));
   }
 
   public FieldStore getStore() {
@@ -43,14 +44,15 @@ public class FieldScene extends Scene {
     return eventAreaManager;
   }
 
-  public void moveStage(String mapID) {
+  public void moveStage(String mapID, IVector2 destination) {
     if (mainCamera != null)
       removeCamera(mainCamera);
     if (player != null)
       player.destroy();
 
     stage.loadStage(mapID);
-    player = new Player(this, new DVector2(0, 0));
+    player = new Player(this,
+        new DVector2(destination.x * Constants.MAPCHIP_SIZE, destination.y * Constants.MAPCHIP_SIZE));
     mainCamera = new Camera(this, mainLayers, 0, player,
         new DVector2(Constants.DISPLAY_WIDTH, Constants.DISPLAY_HEIGHT - Constants.STATUS_HEIGHT),
         new Rectangle(0, 0, stage.getMapSize().x, stage.getMapSize().y));

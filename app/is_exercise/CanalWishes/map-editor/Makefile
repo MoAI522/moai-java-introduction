@@ -8,10 +8,12 @@ build-up:
 	make up
 
 .PHONY: exec-app
-exec:
+exec-app:
 	docker-compose exec app /bin/bash
 
 .PHONY: exec-client
+exec-client:
+	docker-compose exec client /bin/bash
 
 .PHONY: down
 down:

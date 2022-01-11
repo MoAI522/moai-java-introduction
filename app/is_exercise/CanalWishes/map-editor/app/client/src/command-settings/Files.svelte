@@ -2,12 +2,13 @@
   import { onMount } from "svelte";
   import {
     enemies,
-    items,
+    field_objects,
     map_height,
     map_width,
     tiles,
   } from "../stores/map-data";
-  import type { TEnemyData, TItemData } from "../types";
+  import type { TEnemyData, TFOData } from "../types";
+  import fo_data from "../assets/fo.json";
 
   let fileList = [];
   let selectedFilename: string = null;
@@ -20,7 +21,7 @@
     mapSize: Array<number>;
     tiles: Array<Array<number>>;
     enemies: Array<TEnemyData>;
-    items: Array<TItemData>;
+    field_objects: Array<TFOData>;
   };
 
   const updateFileList = async () => {
@@ -36,7 +37,18 @@
     $map_height = data.mapSize[1];
     $tiles = data.tiles;
     $enemies = data.enemies;
-    $items = data.items;
+    $field_objects = data.field_objects.map((fo) => {
+      fo.params = fo.params.map((param, i) => {
+        if (
+          fo_data.find((v) => v.class === fo.class).params[i].type === "number"
+        ) {
+          return parseInt(param as string);
+        } else {
+          return param;
+        }
+      });
+      return fo;
+    });
   };
 
   const save = async (putName = false) => {
@@ -56,7 +68,16 @@
         mapSize: [$map_width, $map_height],
         tiles: $tiles,
         enemies: $enemies,
-        items: $items,
+        field_objects: $field_objects.map((fo) => {
+          fo.params = fo.params.map((param) => {
+            if (typeof param === "number") {
+              return param.toString();
+            } else {
+              return param;
+            }
+          });
+          return fo;
+        }),
       }),
     });
   };

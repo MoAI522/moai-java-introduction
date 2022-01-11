@@ -28,7 +28,6 @@ public class HitManager extends GameObject {
           continue;
         if (Rectangle.intersect(((Hittable) object).getRectangle(), ((Hittable) _object).getRectangle())) {
           hits.add(new HitTupple((Hittable) object, _object));
-          break;
         }
       }
     }

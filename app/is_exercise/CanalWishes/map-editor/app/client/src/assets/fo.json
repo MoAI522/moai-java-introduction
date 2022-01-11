@@ -1,0 +1,20 @@
+[
+  {
+    "class": "com.moai.cw.field_object.Door",
+    "texture_src": "resources/textures/0.png",
+    "coordinate": [0, 72, 24, 36],
+    "params": [
+      { "name": "1link", "type": "string", "default": "0" },
+      {
+        "name": "2destination-x",
+        "type": "number",
+        "default": 0
+      },
+      {
+        "name": "3destination-y",
+        "type": "number",
+        "default": 0
+      }
+    ]
+  }
+]
