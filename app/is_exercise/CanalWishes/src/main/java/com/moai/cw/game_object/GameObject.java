@@ -22,19 +22,25 @@ public abstract class GameObject {
   public GameObject(Scene scene, GameObject parent, DVector2 position) {
     this(scene, position);
     this.parent = parent;
+    if (parent != null)
+      parent.appendChild(this);
   }
 
   public abstract void update(int dt);
 
+  public final void appendChild(GameObject child) {
+    children.add(child);
+  }
+
   public final void destroy() {
-    for (GameObject child : children) {
-      child.destroy();
-    }
+    clearChildren();
     scene.removeGameObject(objectKey);
   }
 
-  public final void appendChild(GameObject child) {
-    children.add(child);
+  public final void clearChildren() {
+    for (GameObject child : children) {
+      child.destroy();
+    }
   }
 
   public final void setPosition(DVector2 position) {

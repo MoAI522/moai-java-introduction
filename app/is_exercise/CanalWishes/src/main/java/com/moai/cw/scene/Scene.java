@@ -1,6 +1,9 @@
 package com.moai.cw.scene;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import com.moai.cw.App;
@@ -66,6 +69,12 @@ public abstract class Scene {
 
   protected final void addCamera(Camera camera) {
     cameras.add(camera);
+    Collections.sort(cameras, Comparator.comparing(Camera::getZindex));
+  }
+
+  protected final void removeCamera(Camera camera) {
+    cameras.remove(camera);
+    Collections.sort(cameras, Comparator.comparing(Camera::getZindex));
   }
 
   public final HashMap<Integer, GameObject> getGameObjects() {

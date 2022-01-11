@@ -15,8 +15,8 @@ public class Spawner extends GameObject implements OffScreenListener {
   private boolean offScreen = true;
   private boolean spawned = false;
 
-  public Spawner(Scene scene, EnemyData data) {
-    super(scene, new DVector2(data.getPosition().get(0) * Constants.MAPCHIP_SIZE,
+  public Spawner(Scene scene, GameObject parent, EnemyData data) {
+    super(scene, parent, new DVector2(data.getPosition().get(0) * Constants.MAPCHIP_SIZE,
         data.getPosition().get(1) * Constants.MAPCHIP_SIZE));
     this.data = data;
   }

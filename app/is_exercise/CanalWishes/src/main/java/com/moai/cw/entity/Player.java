@@ -4,10 +4,12 @@ import java.util.HashMap;
 
 import com.moai.cw.Constants;
 import com.moai.cw.KeyInputManager.KeyCode;
+import com.moai.cw.field_object.Door;
 import com.moai.cw.fireball.Bress;
 import com.moai.cw.fireball.Vomit;
 import com.moai.cw.game_object.GameObject;
 import com.moai.cw.game_object.Hitbox;
+import com.moai.cw.interfaces.EventArea;
 import com.moai.cw.interfaces.Hittable;
 import com.moai.cw.scene.FieldScene;
 import com.moai.cw.store.FieldStore;
@@ -154,6 +156,10 @@ public class Player extends Rigitbody implements Hittable {
           }
         }
       }
+
+      if (getScene().getApp().getKeyInputManager().getState(KeyCode.W) == 1) {
+        enterDoor();
+      }
     }
 
     physics(dt);
@@ -258,6 +264,18 @@ public class Player extends Rigitbody implements Hittable {
         getPosition().add(new DVector2(direction == -1 ? -Vomit.SIZE : getSize().x, getSize().y / 2 - Vomit.SIZE / 2)),
         direction == -1 ? DIRECTION.LEFT : DIRECTION.RIGHT);
     isEating = false;
+  }
+
+  private void enterDoor() {
+    if (!(getScene() instanceof FieldScene))
+      return;
+    FieldScene scene = (FieldScene) getScene();
+    EventArea area = scene.getEventAreaManager().checkArea(getRectangle());
+    if (area == null)
+      return;
+    if (!(area instanceof Door))
+      return;
+    scene.moveStage(((Door) area).getLink());
   }
 
   private static class FrameCounter {

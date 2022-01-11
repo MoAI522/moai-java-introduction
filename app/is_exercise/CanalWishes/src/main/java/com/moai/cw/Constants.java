@@ -14,6 +14,7 @@ public class Constants {
   public static final double G = 2;
 
   public static final int LAYER_BACKGROUND = 0;
+  public static final int LAYER_FIELDOBJECT = 1;
   public static final int LAYER_ENEMY = 2;
   public static final int LAYER_PLAYER = 5;
   public static final int LAYER_FIREBALL = 7;

@@ -13,7 +13,7 @@ public class TitleScene extends Scene {
   public TitleScene(App app) {
     super(app);
     int[] layers = { 0, 1 };
-    addCamera(new Camera(this, layers));
+    addCamera(new Camera(this, layers, 0));
     new Title(this, null);
     new TitleBG(this, new DVector2(0, 0));
     new TitleLogo(this, new DVector2(22, 51));

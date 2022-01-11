@@ -18,18 +18,21 @@ public class Camera extends GameObject {
   private DVector2 fovSize;
   private Rectangle range;
   private int[] layers;
+  private int zindex;
 
-  public Camera(Scene scene, int[] layers, Entity target, DVector2 fovSize, Rectangle range) {
+  public Camera(Scene scene, int[] layers, int zindex, Entity target, DVector2 fovSize, Rectangle range) {
     super(scene, fovSize.multipleScalar(0.5));
     this.layers = layers;
+    this.zindex = zindex;
     this.target = target;
     this.fovSize = fovSize;
     this.range = range;
   }
 
-  public Camera(Scene scene, int[] layers) {
+  public Camera(Scene scene, int[] layers, int zindex) {
     super(scene, new DVector2(0, 0));
     this.layers = layers;
+    this.zindex = zindex;
     this.target = null;
     this.fovSize = null;
     this.range = null;
@@ -115,5 +118,9 @@ public class Camera extends GameObject {
       return i;
     }
     return -2;
+  }
+
+  public int getZindex() {
+    return zindex;
   }
 }
