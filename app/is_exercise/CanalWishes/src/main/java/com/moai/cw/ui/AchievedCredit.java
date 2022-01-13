@@ -8,20 +8,15 @@ import com.moai.cw.util.DVector2;
 import com.moai.cw.util.GraphicObject;
 
 public class AchievedCredit extends UI {
-  private int index;
-  private boolean achieved;
-
-  public AchievedCredit(Scene scene, GameObject parent, DVector2 position, int index) {
+  public AchievedCredit(Scene scene, GameObject parent, DVector2 position) {
     super(scene, parent, position);
-    this.index = index;
-    this.achieved = false;
   }
 
   @Override
   public GraphicObject draw(DVector2 offset) {
-    return new GraphicObject(getPosition().add(offset), new DVector2(1, 1), 0,
-        new CVector2(0 + index * 12, achieved ? 24 : 0),
-        achieved ? new CVector2(12, 12) : new CVector2(1, 1), false);
+    return new GraphicObject(getPosition().add(offset), new DVector2(1, 1), 3,
+        new CVector2(145, 84),
+        new CVector2(14, 14), false);
   }
 
   @Override
@@ -31,9 +26,5 @@ public class AchievedCredit extends UI {
 
   @Override
   public void update(int dt) {
-  }
-
-  public void setIsAchieved() {
-    achieved = true;
   }
 }

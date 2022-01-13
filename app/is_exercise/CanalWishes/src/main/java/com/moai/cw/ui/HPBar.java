@@ -19,7 +19,7 @@ public class HPBar extends UI {
 
   @Override
   public GraphicObject draw(DVector2 offset) {
-    return new GraphicObject(getPosition(), new DVector2(size.x * ratio, size.y), new Color(0, 1, 0));
+    return new GraphicObject(getPosition(), new DVector2(size.x * ratio, size.y), new Color(0, 0.8, 0));
   }
 
   @Override

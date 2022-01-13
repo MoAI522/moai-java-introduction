@@ -16,10 +16,10 @@ public class FieldUI extends GameObject {
     this.store = store;
 
     UIBG uibg = new UIBG(scene);
-    hpbar = new HPBar(scene, uibg, new DVector2(10, 10), new DVector2(100, 15));
+    hpbar = new HPBar(scene, uibg, new DVector2(15, 23), new DVector2(100, 15));
     credits = new AchievedCredit[Constants.CREDITS_NUMBER];
     for (int i = 0; i < credits.length; i++) {
-      credits[i] = new AchievedCredit(scene, uibg, new DVector2(130 + 18 * i, 10), i);
+      credits[i] = new AchievedCredit(scene, uibg, new DVector2(128 + 14 * (i % 8), 23 + 14 * (i / 8)));
     }
   }
 
@@ -27,9 +27,7 @@ public class FieldUI extends GameObject {
   public void update(int dt) {
     hpbar.setRatio((double) store.getPlayerHP() / Constants.PLAYER_HP_MAX);
     for (int i = 0; i < credits.length; i++) {
-      if (store.hasCredit(i)) {
-        credits[i].setIsAchieved();
-      }
+      credits[i].setVisibility(store.hasCredit(i));
     }
   }
 }

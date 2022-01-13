@@ -2,7 +2,7 @@ package com.moai.cw.ui;
 
 import com.moai.cw.Constants;
 import com.moai.cw.scene.Scene;
-import com.moai.cw.util.Color;
+import com.moai.cw.util.CVector2;
 import com.moai.cw.util.DVector2;
 import com.moai.cw.util.GraphicObject;
 
@@ -14,8 +14,8 @@ public class UIBG extends UI {
 
   @Override
   public GraphicObject draw(DVector2 offset) {
-    GraphicObject background = new GraphicObject(getPosition(),
-        new DVector2(Constants.DISPLAY_WIDTH, Constants.STATUS_HEIGHT), new Color(0, 0, 0));
+    GraphicObject background = new GraphicObject(getPosition(), new DVector2(1, 1), 3, new CVector2(0, 98),
+        new CVector2(Constants.DISPLAY_WIDTH, Constants.STATUS_HEIGHT), false);
     return background;
   }
 

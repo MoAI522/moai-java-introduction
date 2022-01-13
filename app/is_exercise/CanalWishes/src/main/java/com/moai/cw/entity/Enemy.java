@@ -36,8 +36,6 @@ public abstract class Enemy extends Rigitbody implements OffScreenListener, Hitt
 
   @Override
   public final void update(int dt) {
-    if (isVaccumed())
-      return;
     if (knockbackCount != -1) {
       knockbackCount++;
       DVector2 v = getVelocity();
@@ -46,13 +44,12 @@ public abstract class Enemy extends Rigitbody implements OffScreenListener, Hitt
       if (knockbackCount == KNOCKBACK_DURATION) {
         knockbackCount = -1;
       }
-    } else {
-      enemyUpdate();
     }
+    enemyUpdate(isVaccumed(), knockbackCount != -1);
     physics(dt);
   }
 
-  protected abstract void enemyUpdate();
+  protected abstract void enemyUpdate(boolean vaccumed, boolean isKnockBacked);
 
   @Override
   public int getLayer() {
