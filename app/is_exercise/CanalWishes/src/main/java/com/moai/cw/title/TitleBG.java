@@ -1,7 +1,6 @@
 package com.moai.cw.title;
 
 import com.moai.cw.Constants;
-import com.moai.cw.KeyInputManager.KeyCode;
 import com.moai.cw.game_object.GameObject;
 import com.moai.cw.interfaces.Drawable;
 import com.moai.cw.scene.Scene;

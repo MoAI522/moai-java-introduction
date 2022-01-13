@@ -1,7 +1,7 @@
 package com.moai.cw;
 
 public class Constants {
-  public static final boolean DEBUG = true;
+  public static final boolean DEBUG = false;
 
   public static final int DISPLAY_WIDTH = 256;
   public static final int DISPLAY_HEIGHT = 224;

@@ -5,6 +5,7 @@ import com.moai.cw.Constants;
 import com.moai.cw.entity.Player;
 import com.moai.cw.game_object.Camera;
 import com.moai.cw.game_object.EventAreaManager;
+import com.moai.cw.game_object.GameStateManager;
 import com.moai.cw.game_object.HitManager;
 import com.moai.cw.game_object.Stage;
 import com.moai.cw.store.FieldStore;
@@ -27,6 +28,7 @@ public class FieldScene extends Scene {
     super(app);
 
     store = new FieldStore();
+    new GameStateManager(this);
     new FieldUI(this, store);
     new HitManager(this);
     eventAreaManager = new EventAreaManager(this);

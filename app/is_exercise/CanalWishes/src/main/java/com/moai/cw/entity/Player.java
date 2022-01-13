@@ -46,7 +46,7 @@ public class Player extends Rigitbody implements Hittable {
   private static final int ANIMATION_FREQUENCY_EATING = 18;
 
   private enum State {
-    STOP, WALK, SPRINT, JUMP, FALL, HOVER, VACCUMING, DAMAGED
+    STOP, WALK, SPRINT, JUMP, FALL, HOVER, VACCUMING, DAMAGED, DEAD
   }
 
   private State state;
@@ -73,6 +73,10 @@ public class Player extends Rigitbody implements Hittable {
 
   @Override
   public void update(int dt) {
+    if (store.isGameClear()) {
+      return;
+    }
+
     counter.update();
 
     DVector2 velocity = getVelocity();
@@ -82,7 +86,7 @@ public class Player extends Rigitbody implements Hittable {
         changeState(State.STOP);
       }
     }
-    boolean isLocked = counter.get(FrameCounter.KEY.LAST_DAMAGED) <= DAMAGE_CONTROL_COOLTIME;
+    boolean isLocked = state == State.DEAD || counter.get(FrameCounter.KEY.LAST_DAMAGED) <= DAMAGE_CONTROL_COOLTIME;
 
     if (counter.get(FrameCounter.KEY.LAST_DAMAGED) < DAMAGE_COOLTIME) {
       setVisibility(counter.get(FrameCounter.KEY.LAST_DAMAGED) % 4 <= 1);
@@ -196,6 +200,10 @@ public class Player extends Rigitbody implements Hittable {
           * (1 - ((double) counter.get(FrameCounter.KEY.LAST_DAMAGED)
               / DAMAGE_CONTROL_COOLTIME)),
           true);
+      return;
+    }
+    if (state == State.DEAD) {
+      changeSpeed(0, true);
       return;
     }
     int direction = 0;
@@ -347,6 +355,10 @@ public class Player extends Rigitbody implements Hittable {
                 % ANIMATION_FREQUENCY_VACCUMING / (ANIMATION_FREQUENCY_VACCUMING / ANIMATION_COUNT_VACCUMING))
                 * SIZE)));
         break;
+      case DEAD:
+        setTextureCoordinate(
+            new CVector2((int) SIZE * 4, 0));
+        break;
     }
     setIsReverse(direction == -1);
   }
@@ -431,8 +443,12 @@ public class Player extends Rigitbody implements Hittable {
             vacuumBox.destroy();
             vacuumBox = null;
           }
-          changeState(State.DAMAGED);
-          counter.reset(FrameCounter.KEY.LAST_DAMAGED);
+          if (store.isGameOver()) {
+            changeState(State.DEAD);
+          } else {
+            changeState(State.DAMAGED);
+            counter.reset(FrameCounter.KEY.LAST_DAMAGED);
+          }
         }
       }
     }
