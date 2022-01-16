@@ -12,7 +12,7 @@ import com.moai.cw.util.Direction.DIRECTION;
 
 public class Spawner extends GameObject implements OffScreenListener {
   private EnemyData data;
-  private boolean offScreen = true;
+  private boolean available = false, onceOffScreen = false;
   private boolean spawned = false;
 
   public Spawner(Scene scene, GameObject parent, EnemyData data) {
@@ -23,8 +23,9 @@ public class Spawner extends GameObject implements OffScreenListener {
 
   @Override
   public void update(int dt) {
-    if (!offScreen || spawned)
+    if (!available || spawned) {
       return;
+    }
 
     try {
       Class<?> enemyClass = Class.forName(data.getClassName());
@@ -37,13 +38,19 @@ public class Spawner extends GameObject implements OffScreenListener {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    offScreen = false;
+    available = false;
+    onceOffScreen = false;
     spawned = true;
   }
 
   @Override
   public void onOffScreen() {
-    offScreen = true;
+    onceOffScreen = true;
+  }
+
+  public void onOnScreen() {
+    if (onceOffScreen)
+      available = true;
   }
 
   public void onChildDestroyed() {

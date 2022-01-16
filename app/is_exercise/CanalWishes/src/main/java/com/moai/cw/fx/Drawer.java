@@ -1,4 +1,4 @@
-package com.moai.cw.graphic_fx;
+package com.moai.cw.fx;
 
 import java.io.InputStream;
 import java.util.ArrayList;

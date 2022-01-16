@@ -30,7 +30,11 @@ public abstract class Scene {
 
   public final void update(int dt) {
     for (int key : gameObjects.keySet()) {
-      gameObjects.get(key).update(dt);
+      GameObject obj = gameObjects.get(key);
+      if (obj.isDisposed()) {
+        continue;
+      }
+      obj.update(dt);
     }
 
     for (int key : gameObjectsToAdd.keySet()) {
@@ -74,6 +78,10 @@ public abstract class Scene {
   protected final void removeCamera(Camera camera) {
     cameras.remove(camera);
     Collections.sort(cameras, Comparator.comparing(Camera::getZindex));
+  }
+
+  public Camera getCullingCamera() {
+    return cameras.get(0);
   }
 
   public final HashMap<Integer, GameObject> getGameObjects() {

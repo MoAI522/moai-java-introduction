@@ -2,7 +2,7 @@ package com.moai.cw;
 
 import java.util.HashMap;
 
-import com.moai.cw.graphic_fx.FXMain;
+import com.moai.cw.fx.FXMain;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.scene.TitleScene;
 

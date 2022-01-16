@@ -84,11 +84,13 @@ public class Camera extends GameObject {
       }
       if (obj instanceof OffScreenListener) {
         Rectangle rect = ((OffScreenListener) obj).getRectangle();
-        if (rect == null || fov == null)
-          continue;
-        if (Rectangle.intersect(fov, rect))
-          continue;
-        ((OffScreenListener) obj).onOffScreen();
+        if (rect == null || fov == null) {
+        } else if (Rectangle.intersect(fov, rect)) {
+          if (obj instanceof Spawner)
+            ((Spawner) obj).onOnScreen();
+        } else {
+          ((OffScreenListener) obj).onOffScreen();
+        }
       }
     }
 

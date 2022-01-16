@@ -11,12 +11,14 @@ public abstract class GameObject {
   private GameObject parent;
   private ArrayList<GameObject> children;
   private DVector2 position;
+  private boolean disposed;
 
   public GameObject(Scene scene, DVector2 position) {
     this.scene = scene;
     objectKey = scene.addGameObject(this);
     this.position = position;
     this.children = new ArrayList<GameObject>();
+    this.disposed = false;
   }
 
   public GameObject(Scene scene, GameObject parent, DVector2 position) {
@@ -35,6 +37,7 @@ public abstract class GameObject {
   public final void destroy() {
     clearChildren();
     scene.removeGameObject(objectKey);
+    disposed = true;
   }
 
   public final void clearChildren() {
@@ -59,6 +62,10 @@ public abstract class GameObject {
 
   protected GameObject getParent() {
     return parent;
+  }
+
+  public boolean isDisposed() {
+    return disposed;
   }
 
   public String toString() {
