@@ -12,7 +12,6 @@ app = flask.Flask(__name__, static_folder="../client/public", static_url_path="/
 def index():
     return app.send_static_file("index.html"), 200
 
-
 @app.route("/list", methods=["GET"])
 def get_file_list():
     files = glob("/dist/*")

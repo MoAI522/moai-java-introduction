@@ -2,7 +2,7 @@
   {
     "class": "com.moai.cw.field_object.Door",
     "texture_src": "resources/textures/0.png",
-    "coordinate": [0, 72, 24, 36],
+    "coordinate": [0, 216, 24, 36],
     "params": [
       { "name": "1link", "type": "string", "default": "0" },
       {
@@ -20,7 +20,7 @@
   {
     "class": "com.moai.cw.field_object.Credit",
     "texture_src": "resources/textures/0.png",
-    "coordinate": [48, 48, 48, 48],
+    "coordinate": [24, 216, 36, 36],
     "params": [{ "name": "1index", "type": "number", "default": "0" }]
   }
 ]

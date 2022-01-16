@@ -8,6 +8,7 @@ services:
     volumes:
       - ./app:/app/
       - ../src/main/resources/map:/dist/
+      - ../src/main/resources/textures:/app/client/public/resources/textures/
     ports:
       - 8080:8080
     command: "python3 src/app.py"

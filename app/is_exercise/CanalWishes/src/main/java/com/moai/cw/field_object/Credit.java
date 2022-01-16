@@ -18,7 +18,7 @@ public class Credit extends Entity implements Hittable {
 
   public Credit(Scene scene, GameObject parent, IVector2 position, List<String> params) {
     super(scene, parent, new DVector2(position.x * Constants.MAPCHIP_SIZE, position.y * Constants.MAPCHIP_SIZE),
-        new DVector2(1, 1), new CVector2(48, 48), new CVector2(48, 48), 0);
+        new DVector2(1, 1), new CVector2(24, 216), new CVector2(36, 36), 0);
     index = Integer.valueOf(params.get(0));
     if (((FieldScene) getScene()).getStore().hasCredit(index)) {
       destroy();
