@@ -3,18 +3,19 @@ package com.moai.cw;
 import java.util.HashMap;
 
 import com.moai.cw.fx.FXMain;
+import com.moai.cw.interfaces.FWController;
 import com.moai.cw.scene.Scene;
 import com.moai.cw.scene.TitleScene;
 
 public class App extends Thread {
-  private FXMain graphics;
+  private FWController fwController;
 
   private Scene currentScene;
   private KeyInputManager keyInputManager;
   private HashMap<String, String> debugInfo;
 
-  public App(FXMain graphics) {
-    this.graphics = graphics;
+  public App(FWController fwController) {
+    this.fwController = fwController;
     keyInputManager = new KeyInputManager();
     debugInfo = new HashMap<String, String>();
     this.start();
@@ -50,7 +51,7 @@ public class App extends Thread {
       keyInputManager.update();
       currentScene.update(dt);
 
-      graphics.draw(currentScene.draw(), debugInfo);
+      fwController.draw(currentScene.draw(), debugInfo);
     }
   }
 
@@ -60,6 +61,10 @@ public class App extends Thread {
 
   public KeyInputManager getKeyInputManager() {
     return keyInputManager;
+  }
+
+  public FWController getFWController() {
+    return fwController;
   }
 
   public void setDebugInfo(String key, String value) {

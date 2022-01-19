@@ -18,6 +18,7 @@ public abstract class Fireball extends Entity implements Hittable {
       CVector2 textureSize, int textureIndex, DIRECTION direction, int power) {
     super(scene, null, position, new DVector2(1, 1), textureCoordinate, textureSize, textureIndex);
     this.direction = direction == DIRECTION.LEFT ? -1 : 1;
+    setIsReverse(direction == DIRECTION.LEFT);
     this.power = power;
   }
 
@@ -30,6 +31,7 @@ public abstract class Fireball extends Entity implements Hittable {
   public void onHit(GameObject target) {
     if (target instanceof Enemy) {
       ((Enemy) target).damage(power, direction);
+      getScene().getApp().getFWController().playSound(4);
       destroy();
     }
   }

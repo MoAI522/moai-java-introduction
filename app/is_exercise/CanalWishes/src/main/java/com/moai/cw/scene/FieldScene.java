@@ -36,6 +36,8 @@ public class FieldScene extends Scene {
     addCamera(uiCamera);
     stage = new Stage(this);
     moveStage("0", new IVector2(2, 3));
+
+    getApp().getFWController().playSound(0);
   }
 
   public FieldStore getStore() {

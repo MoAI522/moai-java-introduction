@@ -6,6 +6,7 @@ import java.util.HashMap;
 import com.moai.cw.App;
 import com.moai.cw.Constants;
 import com.moai.cw.KeyInputManager;
+import com.moai.cw.interfaces.FWController;
 import com.moai.cw.util.GraphicObject;
 
 import javafx.application.Application;
@@ -20,9 +21,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class FXMain extends Application {
+public class FXMain extends Application implements FWController {
   GraphicsContext gc;
   Drawer drawer;
+  SoundPlayer soundPlayer;
   Runnable callback;
 
   @Override
@@ -39,6 +41,7 @@ public class FXMain extends Application {
     // st.setResizable(false);
     st.show();
     drawer = new Drawer();
+    soundPlayer = new SoundPlayer();
     App app = new App(this);
 
     st.setOnCloseRequest(event -> app.stop());
@@ -50,6 +53,7 @@ public class FXMain extends Application {
     launch(args);
   }
 
+  @Override
   public void draw(ArrayList<GraphicObject> objects, HashMap<String, String> debugInfo) {
     if (drawer == null || gc == null)
       return;
@@ -106,5 +110,15 @@ public class FXMain extends Application {
       default:
         return null;
     }
+  }
+
+  @Override
+  public void playSound(int index) {
+    soundPlayer.play(index);
+  }
+
+  @Override
+  public void stopSound(int index) {
+    soundPlayer.stop(index);
   }
 }

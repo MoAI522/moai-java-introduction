@@ -22,6 +22,6 @@ public class Constants {
   public static final int LAYER_UI = 11;
   public static final int LAYER_DEBUG = 20;
 
-  public static final int PLAYER_HP_MAX = 200;
-  public static final int CREDITS_NUMBER = 16;
+  public static final int PLAYER_HP_MAX = 20;
+  public static final int CREDITS_NUMBER = 1;
 }

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.moai.cw.Constants;
 import com.moai.cw.KeyInputManager.KeyCode;
 import com.moai.cw.field_object.Door;
-import com.moai.cw.fireball.Bress;
+import com.moai.cw.fireball.Saliva;
 import com.moai.cw.fireball.Vomit;
 import com.moai.cw.game_object.GameObject;
 import com.moai.cw.game_object.Hitbox;
@@ -132,17 +132,20 @@ public class Player extends Rigitbody implements Hittable {
             setDrag(HOVER_DRAG);
             changeState(State.HOVER);
             counter.reset(FrameCounter.KEY.LAST_HOVER);
+            getScene().getApp().getFWController().playSound(2);
           }
         } else {
           addForce(new DVector2(0, -JUMP_FORCE));
           changeState(State.JUMP);
           counter.reset(FrameCounter.KEY.LAST_HOVER);
+          getScene().getApp().getFWController().playSound(2);
         }
       }
 
       if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == 1) {
         if (isEating) {
           disgorge();
+          getScene().getApp().getFWController().playSound(3);
         } else {
           if (isAirborne()) {
             if (state == State.HOVER) {
@@ -154,6 +157,7 @@ public class Player extends Rigitbody implements Hittable {
               changeState(State.VACCUMING);
               vacuumBox = new VacuumBox();
               changeSpeed(0, false);
+              getScene().getApp().getFWController().playSound(9);
             }
           }
         }
@@ -164,6 +168,8 @@ public class Player extends Rigitbody implements Hittable {
             vacuumBox.destroy();
             vacuumBox = null;
           }
+          getScene().getApp().getFWController().stopSound(9);
+          getScene().getApp().getFWController().stopSound(10);
         }
       }
 
@@ -282,9 +288,11 @@ public class Player extends Rigitbody implements Hittable {
 
   private void stopHovering() {
     setDrag(DEFAULT_DRAG);
-    new Bress(getScene(),
-        getPosition().add(new DVector2(direction == -1 ? -Bress.SIZE : getSize().x, getSize().y / 2 - Bress.SIZE / 2)),
+    new Saliva(getScene(),
+        getPosition()
+            .add(new DVector2(direction == -1 ? -Saliva.SIZE : getSize().x, getSize().y / 2 - Saliva.SIZE / 2)),
         direction == -1 ? DIRECTION.LEFT : DIRECTION.RIGHT);
+    getScene().getApp().getFWController().playSound(3);
   }
 
   private void disgorge() {
@@ -305,6 +313,7 @@ public class Player extends Rigitbody implements Hittable {
       return;
     Door door = (Door) area;
     scene.moveStage(door.getLink(), door.getDestination());
+    getScene().getApp().getFWController().playSound(7);
   }
 
   private void updateTexture() {
@@ -434,6 +443,8 @@ public class Player extends Rigitbody implements Hittable {
         changeState(State.STOP);
         isEating = true;
         enemy.kill();
+        getScene().getApp().getFWController().stopSound(9);
+        getScene().getApp().getFWController().stopSound(10);
       } else {
         if (counter.get(FrameCounter.KEY.LAST_DAMAGED) > DAMAGE_COOLTIME) {
           direction = getPosition().x > enemy.getPosition().x ? -1 : 1;
@@ -445,9 +456,13 @@ public class Player extends Rigitbody implements Hittable {
           }
           if (store.isGameOver()) {
             changeState(State.DEAD);
+            getScene().getApp().getFWController().stopSound(0);
+            getScene().getApp().getFWController().stopSound(1);
+            getScene().getApp().getFWController().playSound(6);
           } else {
             changeState(State.DAMAGED);
             counter.reset(FrameCounter.KEY.LAST_DAMAGED);
+            getScene().getApp().getFWController().playSound(5);
           }
         }
       }

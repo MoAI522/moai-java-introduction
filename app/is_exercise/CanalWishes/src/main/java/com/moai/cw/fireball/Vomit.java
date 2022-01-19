@@ -15,7 +15,7 @@ public class Vomit extends Fireball implements OffScreenListener {
   private DVector2 originPos;
 
   public Vomit(Scene scene, DVector2 position, DIRECTION direction) {
-    super(scene, position, new CVector2(48, 0), new CVector2(SIZE, SIZE), 0, direction, 100);
+    super(scene, position, new CVector2(144, 24), new CVector2(SIZE, SIZE), 1, direction, 100);
     this.frame = 0;
     this.originPos = getPosition();
   }
