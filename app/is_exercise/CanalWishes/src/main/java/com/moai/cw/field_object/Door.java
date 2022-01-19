@@ -15,14 +15,14 @@ public class Door extends Entity implements EventArea {
   private static final int HEIGHT = 36;
   private static final int OFFSET_Y = 12;
 
-  private String link;
+  private int link;
   private IVector2 destination;
 
   public Door(Scene scene, GameObject parent, IVector2 position, List<String> params) {
     super(scene, parent,
         new DVector2(position.x * Constants.MAPCHIP_SIZE, position.y * Constants.MAPCHIP_SIZE + OFFSET_Y),
         new DVector2(1, 1), new CVector2(0, 216), new CVector2(24, HEIGHT), 0);
-    link = params.get(0);
+    link = Integer.valueOf(params.get(0));
     destination = new IVector2(Integer.valueOf(params.get(1)), Integer.valueOf(params.get(2)));
   }
 
@@ -36,7 +36,7 @@ public class Door extends Entity implements EventArea {
 
   }
 
-  public String getLink() {
+  public int getLink() {
     return link;
   }
 

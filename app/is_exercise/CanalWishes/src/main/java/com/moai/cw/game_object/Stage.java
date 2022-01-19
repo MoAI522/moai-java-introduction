@@ -24,7 +24,7 @@ public class Stage extends GameObject {
     blockInformationManager = new BlockInformationManager(scene);
   }
 
-  private void loadFile(String mapID) {
+  private void loadFile(int mapID) {
     try {
       InputStreamReader isr = new InputStreamReader(
           Thread.currentThread().getContextClassLoader().getResourceAsStream("map/" + mapID + ".json"));
@@ -42,7 +42,7 @@ public class Stage extends GameObject {
     }
   }
 
-  public void loadStage(String mapID) {
+  public void loadStage(int mapID) {
     clearChildren();
 
     loadFile(mapID);
