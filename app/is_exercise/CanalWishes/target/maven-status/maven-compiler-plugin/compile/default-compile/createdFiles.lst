@@ -1,2 +1,4 @@
-com/moai/cw/App.class
-com/moai/cw/graphic_fx/FXMain$1.class
+com\moai\cw\fx\FXMain$1.class
+com\moai\cw\App.class
+com\moai\cw\fx\Drawer$1.class
+com\moai\cw\entity\Player$1.class
