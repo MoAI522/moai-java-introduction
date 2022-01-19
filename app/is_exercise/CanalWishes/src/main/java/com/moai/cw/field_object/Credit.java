@@ -34,8 +34,10 @@ public class Credit extends Entity implements Hittable {
   public void onHit(GameObject target) {
     if (target instanceof Player) {
       ((FieldScene) getScene()).getStore().achieveCredit(index);
-      getScene().getApp().getFWController().stopSound(0);
-      getScene().getApp().getFWController().stopSound(1);
+      if (((FieldScene) getScene()).getStore().isGameClear()) {
+        getScene().getApp().getFWController().stopSound(0);
+        getScene().getApp().getFWController().stopSound(1);
+      }
       getScene().getApp().getFWController().playSound(8);
       destroy();
     }

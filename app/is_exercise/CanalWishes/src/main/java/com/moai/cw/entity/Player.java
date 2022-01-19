@@ -55,6 +55,7 @@ public class Player extends Rigitbody implements Hittable {
   private double previousHorizontalVelocity, targetHorizontalVelocity;
   private VacuumBox vacuumBox;
   private boolean isEating;
+  private boolean vaccuming;
 
   private FieldStore store;
 
@@ -68,6 +69,7 @@ public class Player extends Rigitbody implements Hittable {
     targetHorizontalVelocity = 0;
     vacuumBox = null;
     isEating = false;
+    vaccuming = false;
     store = scene.getStore();
   }
 
@@ -162,7 +164,7 @@ public class Player extends Rigitbody implements Hittable {
           }
         }
       } else if (getScene().getApp().getKeyInputManager().getState(KeyCode.B) == -1) {
-        if (state == State.VACCUMING) {
+        if (state == State.VACCUMING && !vaccuming) {
           changeState(State.STOP);
           if (vacuumBox != null) {
             vacuumBox.destroy();
@@ -422,9 +424,12 @@ public class Player extends Rigitbody implements Hittable {
 
     @Override
     public void onHit(GameObject target) {
+      if (isDisposed())
+        return;
       if (!(target instanceof Enemy))
         return;
       ((Enemy) target).onVaccumed(Player.this.getPosition());
+      vaccuming = true;
       destroy();
     }
 
@@ -441,12 +446,13 @@ public class Player extends Rigitbody implements Hittable {
       Enemy enemy = (Enemy) target;
       if (enemy.isVaccumed()) {
         changeState(State.STOP);
+        vaccuming = false;
         isEating = true;
         enemy.kill();
         getScene().getApp().getFWController().stopSound(9);
         getScene().getApp().getFWController().stopSound(10);
       } else {
-        if (counter.get(FrameCounter.KEY.LAST_DAMAGED) > DAMAGE_COOLTIME) {
+        if (!vaccuming && counter.get(FrameCounter.KEY.LAST_DAMAGED) > DAMAGE_COOLTIME) {
           direction = getPosition().x > enemy.getPosition().x ? -1 : 1;
           store.changePlayerHP(-10);
           enemy.damage(10, direction);
